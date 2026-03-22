@@ -1,0 +1,187 @@
+<div class="container mt-4 mb-5">
+  
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+    <div class="mb-3 mb-md-0">
+      <h2 class="fw-bold mb-0">Catálogo de Laboratorio</h2>
+      <p class="text-muted">Explora y solicita el equipo disponible.</p>
+    </div>
+    
+    <div class="d-flex gap-3">
+      <div class="input-group shadow-sm" style="max-width: 300px;">
+        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control border-start-0" placeholder="Buscar equipo..." [(ngModel)]="terminoBusqueda">
+      </div>
+      
+      <button class="btn btn-warning fw-bold position-relative shadow-sm d-flex align-items-center" data-bs-toggle="offcanvas" data-bs-target="#carritoOffcanvas">
+        <i class="bi bi-cart3 me-2"></i> Mi Solicitud
+        <span *ngIf="carrito.length > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+          {{ carrito.length }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    
+    <div *ngIf="equiposFiltrados.length === 0" class="col-12 text-center mt-5 text-muted">
+      <i class="bi bi-search fs-1 mb-3 d-block opacity-50"></i>
+      <h4>No se encontraron equipos para "{{ terminoBusqueda }}"</h4>
+    </div>
+
+    <div class="col-md-6 col-lg-4" *ngFor="let equipo of equiposFiltrados">
+      <div class="card h-100 shadow-sm border-0 card-hover">
+        
+        <div class="position-relative bg-light text-center" style="height: 200px; overflow: hidden;">
+          <img [src]="equipo.img" class="img-fluid h-100 w-100" style="object-fit: cover; transition: transform 0.3s;" alt="Foto de {{ equipo.nombre }}">
+          </div>
+        
+        <div class="card-body d-flex flex-column p-4">
+          <h5 class="card-title fw-bold mb-1">{{ equipo.nombre }}</h5>
+          <p class="text-muted small mb-3">{{ equipo.marca }} | {{ equipo.modelo }}</p>
+          
+          <p class="card-text mt-auto mb-4">
+            <span class="d-flex align-items-center" [ngClass]="equipo.stock > 0 ? 'text-success' : 'text-danger'">
+              <i class="bi" [ngClass]="equipo.stock > 0 ? 'bi-check-circle-fill' : 'bi-x-circle-fill'"></i>
+              <strong class="ms-2">{{ equipo.stock > 0 ? equipo.stock + ' unidades disponibles' : 'Temporalmente agotado' }}</strong>
+            </span>
+          </p>
+          
+          <div class="d-grid gap-2 mt-auto">
+            <button class="btn btn-outline-dark fw-bold rounded-pill" data-bs-toggle="modal" data-bs-target="#modalDetalles" (click)="abrirDetalles(equipo)">
+              Ver Detalles
+            </button>
+            
+            <button class="btn fw-bold rounded-pill" 
+                    [ngClass]="equipo.stock > 0 ? 'btn-primary shadow-sm' : 'btn-secondary disabled'"
+                    data-bs-toggle="modal" data-bs-target="#modalFechas" (click)="prepararAgregar(equipo)">
+              {{ equipo.stock > 0 ? 'Añadir a Solicitud' : 'No Disponible' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalFechas" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0">
+        <h6 class="modal-title fw-bold"><i class="bi bi-calendar-range me-2"></i>Fechas de Préstamo</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="small text-muted mb-4 text-center">Selecciona las fechas para el <strong>{{ equipoParaAgregar?.nombre }}</strong></p>
+        
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">FECHA DE SALIDA</label>
+          <input type="date" class="form-control form-control-lg bg-light" [(ngModel)]="fechaSalidaTemp">
+        </div>
+        <div>
+          <label class="form-label small fw-bold text-dark">FECHA DE ENTREGA</label>
+          <input type="date" class="form-control form-control-lg bg-light" [(ngModel)]="fechaEntregaTemp">
+        </div>
+      </div>
+      <div class="modal-footer bg-light p-3 border-0">
+        <button type="button" class="btn btn-success w-100 fw-bold py-2 rounded-pill" data-bs-dismiss="modal" 
+                [disabled]="!fechaSalidaTemp || !fechaEntregaTemp" 
+                (click)="confirmarAgregarAlCarrito()">
+          Confirmar y Añadir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-end border-start-0 shadow" tabindex="-1" id="carritoOffcanvas">
+  <div class="offcanvas-header bg-dark text-white border-0">
+    <h5 class="offcanvas-title fw-bold"><i class="bi bi-cart3 me-2"></i>Mi Solicitud</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+  </div>
+  
+  <div class="offcanvas-body d-flex flex-column p-0">
+    <div *ngIf="carrito.length === 0" class="text-center text-muted mt-5 p-4">
+      <i class="bi bi-box-seam display-1 opacity-25 mb-3"></i>
+      <p>Aún no has agregado equipos.</p>
+    </div>
+    
+    <ul class="list-group list-group-flush mb-auto" *ngIf="carrito.length > 0">
+      <li class="list-group-item p-4 border-bottom" *ngFor="let item of carrito; let i = index">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h6 class="my-0 fw-bold text-dark">{{ item.nombre }}</h6>
+          </div>
+          <button class="btn btn-sm btn-outline-danger rounded-circle p-1 lh-1" (click)="quitarDelCarrito(i)" title="Quitar equipo">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        
+        <div class="small text-muted bg-light p-2 rounded mt-2">
+          <div class="mb-1"><i class="bi bi-calendar-event me-2 text-primary"></i>Salida: <strong class="text-dark">{{ item.fechaSalida }}</strong></div>
+          <div><i class="bi bi-calendar-check me-2 text-primary"></i>Entrega: <strong class="text-dark">{{ item.fechaEntrega }}</strong></div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="p-4 bg-light border-top" *ngIf="carrito.length > 0">
+      <button class="btn btn-success w-100 fw-bold py-3 shadow-sm rounded-pill" (click)="confirmarPrestamo()" data-bs-dismiss="offcanvas">
+        Enviar Solicitud Final <i class="bi bi-send ms-2"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalDetalles" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-dark text-white border-0">
+        <h5 class="modal-title fw-bold">Ficha Técnica</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body p-0" *ngIf="equipoSeleccionado">
+        <div class="row g-0">
+          <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
+            <img [src]="equipoSeleccionado.img" class="img-fluid rounded shadow-sm" alt="{{ equipoSeleccionado.nombre }}">
+          </div>
+          
+          <div class="col-md-7 p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="badge" [ngClass]="equipoSeleccionado.stock > 0 ? 'bg-success' : 'bg-danger'">
+                {{ equipoSeleccionado.stock > 0 ? equipoSeleccionado.stock + ' en Stock' : 'Agotado' }}
+              </span>
+            </div>
+            
+            <h2 class="fw-bold mb-1">{{ equipoSeleccionado.nombre }}</h2>
+            <p class="text-muted mb-4">{{ equipoSeleccionado.marca }} | Modelo: {{ equipoSeleccionado.modelo }}</p>
+            
+            <h6 class="fw-bold text-primary mb-2">Descripción:</h6>
+            <p class="text-muted small mb-4">{{ equipoSeleccionado.descripcion }}</p>
+            
+            <h6 class="fw-bold text-primary mb-2">Accesorios Incluidos:</h6>
+            <p class="text-muted small mb-0"><i class="bi bi-box-seam me-2"></i>{{ equipoSeleccionado.accesorios }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer bg-light border-0 p-3">
+        <button type="button" class="btn btn-outline-secondary fw-bold rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm" data-bs-dismiss="modal" *ngIf="equipoSeleccionado?.stock > 0"
+                data-bs-toggle="modal" data-bs-target="#modalFechas" (click)="prepararAgregar(equipoSeleccionado)">
+          Añadir a Solicitud <i class="bi bi-plus-circle ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 1055;">
+  <div class="toast align-items-center text-white bg-dark border-0 shadow-lg fade" [class.show]="mostrarToast" [style.display]="mostrarToast ? 'block' : 'none'">
+    <div class="d-flex">
+      <div class="toast-body fw-bold fs-6 py-3 px-4">
+        {{ mensajeToast }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" (click)="mostrarToast = false"></button>
+    </div>
+  </div>
+</div>

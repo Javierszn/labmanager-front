@@ -1,0 +1,14 @@
+/* Efecto hover suave para los enlaces */
+.hover-white {
+  transition: color 0.2s ease;
+}
+
+.hover-white:hover {
+  color: #ffffff !important;
+}
+
+/* Ajuste del color del footer cuando está activo el Modo Oscuro */
+[data-bs-theme="dark"] footer.bg-dark {
+  background-color: #0d1117 !important; /* Un tono casi negro puro */
+  border-top: 1px solid #30363d;
+}

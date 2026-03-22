@@ -1,0 +1,41 @@
+/* Efecto hover suave para las tarjetas */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 10px;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Estilo para las cajitas de las fechas */
+.date-box {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #e9ecef;
+}
+
+/* ========================================== */
+/* COMPATIBILIDAD CON MODO OSCURO             */
+/* ========================================== */
+
+[data-bs-theme="dark"] .card-hover {
+  background-color: #212529;
+  border: 1px solid #373b3e;
+}
+
+/* Forzar el color blanco/claro en los textos principales en modo oscuro */
+[data-bs-theme="dark"] .card-hover .text-dark {
+  color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .date-box {
+  background-color: #2b3035;
+  color: #adb5bd;
+  border-color: #373b3e;
+}
+
+[data-bs-theme="dark"] .bg-light {
+  background-color: #2b3035 !important;
+}

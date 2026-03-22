@@ -1,0 +1,68 @@
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9 col-xl-8">
+      
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom pb-3">
+        <div>
+          <h2 class="fw-bold mb-0">Historial de Préstamos</h2>
+          <p class="text-muted mb-0 mt-1">
+            <i class="bi bi-person-circle me-2"></i>{{ alumno }}
+          </p>
+        </div>
+        
+        <div class="mt-3 mt-md-0 text-md-end">
+          <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm">
+            Total Histórico: {{ prestamos.length }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card mb-3 shadow-sm border-0 card-hover border-start border-4" 
+           [ngClass]="'border-' + prestamo.color" 
+           *ngFor="let prestamo of prestamos">
+        
+        <div class="card-body p-3 p-md-4">
+          <div class="row align-items-center">
+            
+            <div class="col-auto d-none d-sm-block">
+              <div class="bg-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi fs-3" 
+                   [ngClass]="{
+                     'bi-box-seam text-success': prestamo.estado === 'ACTIVO',
+                     'bi-check2-all text-secondary': prestamo.estado === 'DEVUELTO',
+                     'bi-exclamation-triangle-fill text-danger': prestamo.estado === 'SANCIONADO'
+                   }">
+                </i>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h5 class="fw-bold mb-0 text-dark">{{ prestamo.items }}</h5>
+                
+                <span class="badge rounded-pill px-3 py-2 border" 
+                      [ngClass]="'bg-' + prestamo.color + ' bg-opacity-10 text-' + prestamo.color + ' border-' + prestamo.color">
+                  {{ prestamo.estado }}
+                </span>
+              </div>
+              
+              <p class="text-muted small mb-3">Folio de solicitud: <span class="fw-bold text-dark">#{{ prestamo.folio }}</span></p>
+              
+              <div class="d-flex flex-wrap gap-2 small">
+                <div class="date-box px-2 py-1 rounded">
+                  <i class="bi bi-calendar-event me-1 text-primary"></i>Salida: <strong>{{ prestamo.fechaSalida }}</strong>
+                </div>
+                <div class="date-box px-2 py-1 rounded" [ngClass]="{'border border-danger text-danger bg-danger bg-opacity-10': prestamo.estado === 'SANCIONADO'}">
+                  <i class="bi bi-calendar-check me-1" [ngClass]="prestamo.estado === 'SANCIONADO' ? 'text-danger' : 'text-primary'"></i>
+                  Límite: <strong [ngClass]="prestamo.estado === 'SANCIONADO' ? 'text-danger' : ''">{{ prestamo.limite }}</strong>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

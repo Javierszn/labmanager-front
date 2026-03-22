@@ -1,0 +1,24 @@
+/* Estilo para los enlaces de navegación */
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff; /* Color blanco para el texto */
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Estilo para el enlace cuando está activo o se pasa el mouse */
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #fff;
+}
+
+/* Subrayado naranja elegante para el enlace activo */
+.navbar-dark .navbar-nav .nav-link.active::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: var(--uaslp-gold); /* Usa la variable de dorado UASLP que definimos */
+  bottom: 0;
+  left: 0;
+}

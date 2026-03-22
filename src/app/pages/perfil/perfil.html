@@ -1,0 +1,127 @@
+<div class="container mt-4 mb-5">
+  <div class="mb-4">
+    <h2 class="fw-bold">Mi Perfil</h2>
+    <p class="text-muted">Gestiona tu información personal y revisa tu estado en el laboratorio.</p>
+  </div>
+
+  <div class="row g-4">
+    
+    <div class="col-md-4">
+      <div class="card shadow-sm border-0 text-center p-4 sticky-top" style="top: 20px;">
+        <div class="mb-3 position-relative d-inline-block mx-auto">
+          <img [src]="usuario.foto" alt="Foto de perfil" class="rounded-circle shadow-sm border border-3 border-primary" style="width: 128px; height: 128px; object-fit: cover;">
+          <button class="btn p-0 rounded-circle position-absolute bottom-0 end-0 shadow border border-white bg-white d-flex align-items-center justify-content-center" style="transform: translate(15%, 15%); width: 36px; height: 36px;" (click)="fileInput.click()" title="Editar Foto">
+            <img src="https://cdn-icons-png.flaticon.com/512/3659/3659853.png" alt="Editar" class="p-2" style="width: 100%; height: 100%; object-fit: contain;">
+          </button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
+        </div>
+
+        <div class="mt-3">
+          <h4 class="fw-bold mb-0">{{ usuario.nombres }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}</h4>
+          <p class="text-primary fw-bold mb-2">{{ usuario.institucion }}</p>
+          
+          <span class="badge" [ngClass]="usuario.estado === 'Activo' ? 'bg-success' : 'bg-danger'">
+            Estado en Sistema: {{ usuario.estado }}
+          </span>
+        </div>
+        
+        <hr class="my-3">
+        
+        <div class="text-start text-muted mb-3 small">
+          <p class="mb-2"><i class="bi bi-envelope-fill me-2"></i>{{ usuario.correo }}</p>
+          <p class="mb-2"><i class="bi bi-telephone-fill me-2"></i>{{ usuario.telefono }}</p>
+          <p class="mb-0"><i class="bi bi-building me-2"></i>{{ usuario.facultad }}</p>
+        </div>
+
+        <button type="button" class="btn btn-danger w-100 fw-bold py-2 mt-2" (click)="cerrarSesion()">
+          <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold">Datos Personales</h5>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row mb-3 g-3">
+              <div class="col-md-12">
+                <label class="form-label text-muted small fw-bold">NOMBRE(S)</label>
+                <input type="text" class="form-control" name="nombres" [(ngModel)]="usuario.nombres">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">APELLIDO PATERNO</label>
+                <input type="text" class="form-control" name="apPaterno" [(ngModel)]="usuario.apellidoPaterno">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">APELLIDO MATERNO</label>
+                <input type="text" class="form-control" name="apMaterno" [(ngModel)]="usuario.apellidoMaterno">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">TELÉFONO</label>
+                <input type="text" class="form-control" name="telefono" [(ngModel)]="usuario.telefono">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">CORREO ELECTRÓNICO</label>
+                <input type="email" class="form-control" name="correo" [(ngModel)]="usuario.correo">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">INSTITUCIÓN</label>
+                <input type="text" class="form-control" name="institucion" [(ngModel)]="usuario.institucion">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">FACULTAD / ÁREA</label>
+                <input type="text" class="form-control" name="facultad" [(ngModel)]="usuario.facultad">
+              </div>
+            </div>
+            <div class="text-end mt-2">
+              <button type="button" class="btn btn-primary fw-bold px-4" (click)="guardarPerfil()">Guardar Cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold">Seguridad</h5>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row mb-3 g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">NUEVA CONTRASEÑA</label>
+                <input type="password" class="form-control" placeholder="Escribe tu nueva contraseña">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">CONFIRMAR CONTRASEÑA</label>
+                <input type="password" class="form-control" placeholder="Repite la contraseña">
+              </div>
+            </div>
+            <div class="text-end mt-2">
+              <button type="button" class="btn btn-outline-dark fw-bold px-4" (click)="guardarPassword()">Actualizar Contraseña</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0 border-start border-4" [ngClass]="usuario.deuda === 0 ? 'border-success' : 'border-danger'">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="fw-bold mb-1">Estado de Sanciones</h5>
+            <p class="text-muted mb-0" *ngIf="usuario.deuda === 0">No tienes multas ni bloqueos pendientes. ¡Gracias por entregar a tiempo!</p>
+            <p class="text-danger fw-bold mb-0" *ngIf="usuario.deuda > 0">Tienes una multa o bloqueo pendiente por entrega tardía.</p>
+          </div>
+          <div class="text-end">
+            <h3 class="fw-bold mb-0" [ngClass]="usuario.deuda === 0 ? 'text-success' : 'text-danger'">
+              ${{ usuario.deuda }}.00
+            </h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

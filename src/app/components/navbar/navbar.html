@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2">
+  <div class="container">
+    
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <img src="assets/logo.png" alt="labManager Logo" class="me-2" style="height: 55px; object-fit: contain;transform: scale(1.8);">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      
+      <ul class="navbar-nav me-auto ms-0 ms-lg-4 gap-lg-2">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home" routerLinkActive="active">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/catalogo" routerLinkActive="active">Catálogo</a>
+        </li>
+        
+        <li class="nav-item" *ngIf="rolUsuario === 'alumno' || rolUsuario === 'admin'">
+          <a class="nav-link" routerLink="/alumno/historial" routerLinkActive="active">Mis Préstamos</a>
+        </li>
+        
+        <li class="nav-item" *ngIf="rolUsuario === 'admin'">
+          <a class="nav-link" routerLink="/admin/inventario" routerLinkActive="active">Inventario (Admin)</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
+        <li class="nav-item me-2">
+          <div class="form-check form-switch d-flex align-items-center mb-0">
+            <input class="form-check-input mt-0 cursor-pointer" type="checkbox" id="darkModeSwitch" (change)="toggleDarkMode()" style="width: 2.5em; height: 1.25em;">
+            <label class="form-check-label ms-2 fs-5" for="darkModeSwitch" title="Cambiar Tema">{{ isDarkMode ? '☀️' : '🌙' }}</label>
+          </div>
+        </li>
+
+        <li class="nav-item" *ngIf="rolUsuario === 'visitante'">
+          <a routerLink="/login" class="btn btn-warning fw-bold rounded-pill px-4 py-2 shadow-sm">Iniciar Sesión</a>
+        </li>
+
+        <li class="nav-item dropdown" *ngIf="rolUsuario !== 'visitante'">
+          <a class="nav-link dropdown-toggle d-flex align-items-center fw-bold text-white" href="javascript:void(0)" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle fs-4 me-2"></i>
+            Mi Perfil
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="perfilDropdown">
+            <li>
+              <a class="dropdown-item py-2" routerLink="/alumno/perfil">
+                <i class="bi bi-person me-2 text-primary"></i>Ver Mi Perfil
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger py-2" href="javascript:void(0)" (click)="cerrarSesion()">
+                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>

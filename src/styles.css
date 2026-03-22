@@ -1,1 +1,233 @@
-/* You can add global styles to this file, and also import other style files */
+/* ========================================== */
+/* TEMA OFICIAL UASLP PARA LABMANAGER         */
+/* ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+/* 1. Definimos las variables de color oficiales */
+:root {
+  --uaslp-blue: #003b5c;       /* Azul marino profundo */
+  --uaslp-blue-light: #005689; /* Azul un poco más claro para efectos */
+  --uaslp-gold: #f2a900;       /* Dorado oficial */
+  --uaslp-gold-hover: #d99700; /* Dorado oscuro para cuando pasas el mouse */
+}
+
+/* 2. Modificar la Barra de Navegación (Navbar) */
+/* Le quitamos el gris aburrido y le ponemos un degradado azul elegante */
+.bg-dark {
+  background: linear-gradient(135deg, var(--uaslp-blue) 0%, var(--uaslp-blue-light) 100%) !important;
+}
+
+/* 3. Botones Primarios (Reemplazamos el azul genérico por el Azul UASLP) */
+.btn-primary {
+  background-color: var(--uaslp-blue) !important;
+  border-color: var(--uaslp-blue) !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--uaslp-blue-light) !important;
+  border-color: var(--uaslp-blue-light) !important;
+}
+
+/* 4. Botones de contorno (Outline) */
+.btn-outline-primary {
+  color: var(--uaslp-blue) !important;
+  border-color: var(--uaslp-blue) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--uaslp-blue) !important;
+  color: white !important;
+}
+
+/* 5. Botones de Advertencia / Carrito (Reemplazamos el amarillo por el Dorado UASLP) */
+.btn-warning {
+  background-color: var(--uaslp-gold) !important;
+  border-color: var(--uaslp-gold) !important;
+  color: #000 !important;
+}
+
+.btn-warning:hover {
+  background-color: var(--uaslp-gold-hover) !important;
+  border-color: var(--uaslp-gold-hover) !important;
+}
+
+/* 6. Textos destacados y bordes */
+.text-primary {
+  color: var(--uaslp-blue) !important;
+}
+
+.border-primary {
+  border-color: var(--uaslp-blue) !important;
+}
+
+/* 7. Clase especial para el Banner del Home */
+.banner-uaslp {
+  background: linear-gradient(to right, rgba(0, 59, 92, 0.05), rgba(0, 59, 92, 0.15)) !important;
+  border-top: 5px solid var(--uaslp-gold) !important;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+/* ========================================== */
+/* UI MOVEMENTS & SMOOTH ANIMATIONS           */
+/* ========================================== */
+
+/* 1. Global Smooth Transition for all elements */
+/* This makes color changes and movement fluid, not abrupt. */
+.btn, .nav-link, .card, .table tbody tr {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* 2. Interactive Catalog Cards (Home & Catalog) */
+/* When the user passes the mouse, the card lifts slightly and drops a shadow. */
+.card:hover {
+  transform: translateY(-8px); /* Lift up 8 pixels */
+  box-shadow: 0 1rem 3rem rgba(0, 59, 92, 0.175) !important; /* Richer shadow using UASLP blue */
+}
+
+/* 3. Button Hover 'Glow' Effect */
+/* Adds a subtle shadow when hovering over primary or gold buttons. */
+.btn:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 4. Navbar Link Slide Animation */
+/* Creates a slick under-line animation for menu links using the Gold color. */
+.navbar-nav .nav-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: var(--uaslp-gold);
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+/* 5. Subtle Table Row Hover (Admin Panel) */
+/* Makes action icons and text change color smoothly in tables. */
+.table-hover tbody tr:hover td {
+  color: var(--uaslp-blue);
+}
+
+:root {
+  --uaslp-blue: #003b5c;       
+  --uaslp-blue-light: #005689; 
+  --uaslp-gold: #f2a900;       
+  --uaslp-gold-hover: #d99700; 
+}
+
+.bg-dark {
+  background: linear-gradient(135deg, var(--uaslp-blue) 0%, var(--uaslp-blue-light) 100%) !important;
+}
+
+.btn-primary { background-color: var(--uaslp-blue) !important; border-color: var(--uaslp-blue) !important; color: white !important; }
+.btn-primary:hover { background-color: var(--uaslp-blue-light) !important; border-color: var(--uaslp-blue-light) !important; }
+
+.btn-outline-primary { color: var(--uaslp-blue) !important; border-color: var(--uaslp-blue) !important; }
+.btn-outline-primary:hover { background-color: var(--uaslp-blue) !important; color: white !important; }
+
+.btn-warning { background-color: var(--uaslp-gold) !important; border-color: var(--uaslp-gold) !important; color: #000 !important; }
+.btn-warning:hover { background-color: var(--uaslp-gold-hover) !important; border-color: var(--uaslp-gold-hover) !important; }
+
+.text-primary { color: var(--uaslp-blue) !important; }
+.border-primary { border-color: var(--uaslp-blue) !important; }
+
+.banner-uaslp {
+  background: linear-gradient(to right, rgba(0, 59, 92, 0.05), rgba(0, 59, 92, 0.15)) !important;
+  border-top: 5px solid var(--uaslp-gold) !important;
+  border-bottom: 0 !important; border-left: 0 !important; border-right: 0 !important;
+}
+
+/* ========================================== */
+/* ANIMACIONES Y EFECTOS HOVER                */
+/* ========================================== */
+.btn, .nav-link, .card, .table tbody tr { transition: all 0.3s ease-in-out !important; }
+.card:hover { transform: translateY(-8px); box-shadow: 0 1rem 3rem rgba(0, 59, 92, 0.175) !important; }
+.btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+.navbar-nav .nav-link { position: relative; overflow: hidden; }
+.navbar-nav .nav-link::after {
+  content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%;
+  background-color: var(--uaslp-gold); transition: all 0.3s ease-in-out; transform: translateX(-50%);
+}
+.navbar-nav .nav-link:hover::after, .navbar-nav .nav-link.active::after { width: 100%; }
+
+/* ========================================== */
+/* TIPOGRAFÍA Y ESTILO MODERNO (APP STYLE)    */
+/* ========================================== */
+
+/* 2. Aplicar la fuente a toda la página y dar un fondo súper tenue */
+body {
+  font-family: 'Poppins', sans-serif !important;
+  background-color: #fcfcfc; 
+}
+
+/* 3. Bordes muy redondeados tipo Apple/iOS */
+.card {
+  border-radius: 16px !important;
+  overflow: hidden; /* Evita que la foto se salga de las esquinas redondeadas */
+}
+
+.btn {
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+}
+
+.modal-content {
+  border-radius: 20px !important;
+}
+
+.form-control, .input-group-text {
+  border-radius: 12px !important;
+}
+
+.badge {
+  border-radius: 8px !important;
+  padding: 0.5em 0.8em !important;
+}
+
+/* Sombra más suave y difuminada por defecto para las cajas */
+.shadow-sm {
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.04) !important;
+}
+:root {
+  --bs-primary: #004a99; /* El azul institucional de la UASLP */
+}
+
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+[data-bs-theme="dark"] body {
+  background-color: #121212;
+}
+
+/* Tarjetas modernas */
+.card {
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+/* Inputs elegantes */
+.form-control {
+  border-radius: 8px;
+  padding: 10px 15px;
+}
+

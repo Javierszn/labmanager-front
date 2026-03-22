@@ -1,0 +1,118 @@
+/* Pestañas (Nav Pills) personalizadas */
+.nav-pills .nav-link {
+  color: #6c757d !important;
+  transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #004a99 !important; /* Azul UASLP */
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(0, 74, 153, 0.3);
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+  background-color: #e9ecef;
+}
+
+/* Tablas más limpias */
+.custom-table th {
+  padding: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.custom-table td {
+  padding: 15px;
+}
+
+/* Compatibilidad con Modo Oscuro */
+[data-bs-theme="dark"] .bg-white.rounded-pill {
+  background-color: #212529 !important;
+  border: 1px solid #373b3e;
+}
+
+[data-bs-theme="dark"] .nav-pills .nav-link:hover:not(.active) {
+  background-color: #343a40;
+}
+
+[data-bs-theme="dark"] .custom-table {
+  border-color: #373b3e;
+}
+
+/* Pestañas (Nav Pills) personalizadas */
+.nav-pills .nav-link {
+  color: #6c757d !important;
+  transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #004a99 !important; /* Azul UASLP */
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(0, 74, 153, 0.3);
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+  background-color: #e9ecef;
+}
+
+/* Tablas más limpias */
+.custom-table th {
+  padding: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.custom-table td {
+  padding: 15px;
+}
+
+/* Estilos específicos para los botones de la tabla */
+.custom-table .btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+}
+
+/* Compatibilidad con Modo Oscuro */
+[data-bs-theme="dark"] .bg-white.rounded-pill {
+  background-color: #212529 !important;
+  border: 1px solid #373b3e;
+}
+
+[data-bs-theme="dark"] .nav-pills .nav-link:hover:not(.active) {
+  background-color: #343a40;
+}
+
+[data-bs-theme="dark"] .custom-table {
+  border-color: #373b3e;
+}
+
+/* Estilo personalizado para el botón Editar del Inventario */
+.btn-white {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.btn-hover-edit {
+  transition: all 0.2s ease;
+}
+
+.btn-hover-edit:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+  transform: translateY(-1px);
+}
+
+/* Modo oscuro para el botón editar */
+[data-bs-theme="dark"] .btn-white {
+  background-color: #2b3035;
+  color: #dee2e6;
+  border-color: #495057 !important;
+}
+
+[data-bs-theme="dark"] .btn-hover-edit:hover {
+  background-color: #343a40;
+}

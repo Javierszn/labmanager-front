@@ -1,0 +1,116 @@
+<div class="container-fluid p-0">
+  
+  <section class="home-hero d-flex align-items-center text-white py-5 mb-5 shadow-sm">
+    <div class="container py-4 text-center">
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+          
+          <div class="mb-3">
+            <span class="badge w-auto bg-uaslp-yellow px-3 py-2 fw-bold rounded-pill text-uppercase small">
+              Sistema Oficial
+            </span>
+          </div>
+          
+          <h1 class="display-3 fw-bold mb-3 text-white">
+            Bienvenido a LabManager
+          </h1>
+          
+          <p class="lead text-white-75 mb-4 px-md-5">
+            El sistema oficial de gestión y préstamo de equipos para la Facultad de Ingeniería - UASLP.<br class="d-none d-md-block">
+            Explora nuestro catálogo, revisa la disponibilidad en tiempo real y gestiona tus prácticas de laboratorio con facilidad.
+          </p>
+          
+          <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <button class="btn btn-warning btn-lg fw-bold px-5 py-3 shadow border border-dark rounded-pill home-hero-btn" routerLink="/catalogo">
+              Explorar Catálogo de Equipos <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="row g-4 mb-5">
+      
+      <div class="col-lg-4">
+        <div class="card card-info border-0 shadow-sm h-100">
+          <div class="card-header bg-uaslp-navy text-white pt-4 pb-0 border-0">
+            <h5 class="fw-bold mb-0 text-white">Información del Laboratorio</h5>
+          </div>
+          
+          <div class="card-body bg-uaslp-navy text-white p-4">
+            
+            <div class="d-flex align-items-start mb-4">
+              <i class="bi bi-clock-fill text-uaslp-yellow fs-3 me-3 mt-1"></i>
+              <div>
+                <h6 class="fw-bold mb-1 text-white">Horarios de Atención:</h6>
+                <p class="mb-0 text-white-75">Lunes a Viernes: 8:00 hrs - 20:00 hrs<br>Sábados: 9:00 hrs - 13:00 hrs</p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-start mb-4">
+              <i class="bi bi-geo-alt-fill text-uaslp-yellow fs-3 me-3 mt-1"></i>
+              <div>
+                <h6 class="fw-bold mb-1 text-white">Ubicación:</h6>
+                <p class="mb-0 text-white-75">Edificio de Laboratorios, Planta Baja.<br>Facultad de Ingeniería - UASLP</p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-start bg-light-translucent p-3 rounded">
+              <i class="bi bi-check-circle-fill text-success fs-3 me-3 mt-1"></i>
+              <div>
+                <h6 class="fw-bold mb-1 text-white">Reglas Básicas:</h6>
+                <ul class="list-unstyled mb-0 small text-white-75">
+                  <li class="mb-1">Presentar credencial vigente.</li>
+                  <li class="mb-1">Devolver el equipo limpio.</li>
+                  <li>Retrasos generan sanciones.</li>
+                </ul>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="mb-4 d-flex align-items-center justify-content-between">
+          <h3 class="fw-bold mb-0 text-dark">
+            <i class="bi bi-fire text-danger me-2"></i>Equipos Más Solicitados
+          </h3>
+          <a routerLink="/catalogo" class="text-decoration-none fw-bold text-primary small">Ver todo</a>
+        </div>
+        
+        <div class="row g-3">
+          
+          <div class="col-md-6 col-xl-4" *ngFor="let equipo of [
+            {nombre: 'Osciloscopio Tektronix', categoria: 'Medición', icono: 'bi bi-activity', id: 2},
+            {nombre: 'Arduino Uno R3', categoria: 'Tarjetas', icono: 'bi bi-cpu-fill', id: 4},
+            {nombre: 'Fuente de Poder', categoria: 'Fuentes', icono: 'bi bi-lightning-charge-fill', id: 6}
+          ]">
+            <div class="card card-equipo border-0 shadow-sm h-100 p-3">
+              
+              <div class="text-center bg-light rounded p-4 mb-3 d-flex align-items-center justify-content-center" style="height: 120px;">
+                <i class="{{ equipo.icono }} display-3 text-secondary opacity-50"></i>
+              </div>
+              
+              <div class="card-body p-0 d-flex flex-column">
+                <span class="badge bg-secondary w-auto align-self-start mb-2 small rounded-pill px-3">{{ equipo.categoria }}</span>
+                <h6 class="card-title fw-bold text-dark mb-3">{{ equipo.nombre }}</h6>
+                
+                <div class="mt-auto pt-2">
+                  <button class="btn btn-outline-dark btn-sm w-100 fw-bold rounded-pill" (click)="abrirDetalles(equipo.id)">
+                    Ver en Catálogo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

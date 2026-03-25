@@ -16,7 +16,7 @@ export class Perfil {
   usuario = {
     nombres: 'Javier', 
     apellidoPaterno: 'García',
-    apellidoMaterno: 'López',
+    apellidoMaterno: 'Rivera',
     telefono: '4441234567',
     correo: 'javier.garcia@gmail.com',
     facultad: 'Facultad de Ingeniería',

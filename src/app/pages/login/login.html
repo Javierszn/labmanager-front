@@ -1,3 +1,25 @@
+<div *ngIf="notificacion.mostrar" class="position-fixed top-0 end-0 p-4" style="z-index: 9999;">
+  <div class="alert shadow-lg d-flex align-items-center mb-0"
+       [ngClass]="{
+         'alert-success': notificacion.tipo === 'success',
+         'alert-danger': notificacion.tipo === 'danger',
+         'alert-warning': notificacion.tipo === 'warning'
+       }"
+       style="min-width: 320px; border-left: 6px solid; animation: fadeIn 0.3s ease-in-out;">
+    <div class="me-3 fs-2">
+      <span *ngIf="notificacion.tipo === 'success'">✅</span>
+      <span *ngIf="notificacion.tipo === 'danger'">❌</span>
+      <span *ngIf="notificacion.tipo === 'warning'">⚠️</span>
+    </div>
+    <div>
+      <div class="fw-bold">
+        {{ notificacion.tipo === 'success' ? '¡Éxito!' : (notificacion.tipo === 'danger' ? 'Error' : 'Atención') }}
+      </div>
+      <div class="small">{{ notificacion.mensaje }}</div>
+    </div>
+  </div>
+</div>
+
 <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
   
   <div class="col-md-5 text-center p-5 bg-light rounded shadow-sm me-md-4 mb-4 mb-md-0 border">
@@ -16,19 +38,17 @@
           <form (ngSubmit)="iniciarSesionReal()">
             <div class="mb-3">
               <label class="form-label fw-bold">Correo Electrónico</label>
-              <input type="email" class="form-control" placeholder="tu@correo.com" name="correo" [(ngModel)]="correoLogin">
-              <div class="form-text small">Escribe <span class="badge bg-dark">admin</span> en tu correo para probar vista de administrador.</div>
+              <input type="email" class="form-control" placeholder="tu@correo.com" name="correo" [(ngModel)]="correoLogin" required #correoLog="ngModel" [ngClass]="{'is-invalid': formEnviado && correoLog.invalid}">
+              <div class="form-text small">Escribe <span class="badge bg-dark">admin</span> en tu correo para probar vista.</div>
             </div>
             
             <div class="mb-2">
               <label class="form-label fw-bold">Contraseña</label>
-              <input type="password" class="form-control" placeholder="********" name="password" [(ngModel)]="passwordLogin">
+              <input type="password" class="form-control" placeholder="********" name="password" [(ngModel)]="passwordLogin" required #passLog="ngModel" [ngClass]="{'is-invalid': formEnviado && passLog.invalid}">
             </div>
             
             <div class="text-end mb-4">
-              <a href="javascript:void(0)" class="text-decoration-none small text-primary fw-bold" (click)="setMode('forgot')">
-                ¿Olvidaste tu contraseña?
-              </a>
+              <a href="javascript:void(0)" class="text-decoration-none small text-primary fw-bold" (click)="setMode('forgot')">¿Olvidaste tu contraseña?</a>
             </div>
             
             <div class="d-grid gap-2">
@@ -36,60 +56,59 @@
             </div>
             
             <div class="text-center mt-4">
-              <a href="javascript:void(0)" class="text-decoration-none fw-bold text-muted" (click)="setMode('register')">
-                ¿No tienes cuenta? <span class="text-primary">Regístrate aquí</span>
-              </a>
+              <a href="javascript:void(0)" class="text-decoration-none fw-bold text-muted" (click)="setMode('register')">¿No tienes cuenta? <span class="text-primary">Regístrate aquí</span></a>
             </div>
           </form>
         </div>
 
         <div *ngIf="authMode === 'register'">
           <h3 class="card-title text-center mb-4 fw-bold">Crear Cuenta</h3>
-          <form>
+          
+          <form (ngSubmit)="registrarReal()">
             <div class="row g-2 mb-3">
               <div class="col-12">
-                <label class="form-label small fw-bold text-muted mb-1">NOMBRE(S)</label>
-                <input type="text" class="form-control" placeholder="Ej. Javier">
+                <label class="form-label small fw-bold text-muted mb-1">NOMBRE(S) *</label>
+                <input type="text" class="form-control" placeholder="Ej. Javier" name="regNombre" [(ngModel)]="regNombre" required #regNom="ngModel" [ngClass]="{'is-invalid': formEnviado && regNom.invalid}">
               </div>
               <div class="col-6">
                 <label class="form-label small fw-bold text-muted mb-1">AP. PATERNO</label>
-                <input type="text" class="form-control" placeholder="García">
+                <input type="text" class="form-control" placeholder="García" name="regApPaterno" [(ngModel)]="regApPaterno">
               </div>
               <div class="col-6">
                 <label class="form-label small fw-bold text-muted mb-1">AP. MATERNO</label>
-                <input type="text" class="form-control" placeholder="López">
+                <input type="text" class="form-control" placeholder="López" name="regApMaterno" [(ngModel)]="regApMaterno">
               </div>
             </div>
 
             <div class="row g-2 mb-3">
               <div class="col-6">
-                <label class="form-label small fw-bold text-muted mb-1">TELÉFONO</label>
-                <input type="tel" class="form-control" placeholder="10 dígitos">
+                <label class="form-label small fw-bold text-muted mb-1">TELÉFONO / MATRÍCULA</label>
+                <input type="text" class="form-control" placeholder="Opcional" name="regMatricula" [(ngModel)]="regMatricula">
               </div>
               <div class="col-6">
-                <label class="form-label small fw-bold text-muted mb-1">CORREO</label>
-                <input type="email" class="form-control" placeholder="tu@correo.com">
+                <label class="form-label small fw-bold text-muted mb-1">CORREO *</label>
+                <input type="email" class="form-control" placeholder="tu@correo.com" name="regCorreo" [(ngModel)]="regCorreo" required #regCorr="ngModel" [ngClass]="{'is-invalid': formEnviado && regCorr.invalid}">
               </div>
             </div>
 
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label small fw-bold text-muted mb-1">INSTITUCIÓN</label>
-                <input type="text" class="form-control" placeholder="Ej. UASLP">
+                <input type="text" class="form-control" placeholder="Ej. UASLP" name="regInstitucion" [(ngModel)]="regInstitucion">
               </div>
               <div class="col-6">
                 <label class="form-label small fw-bold text-muted mb-1">FACULTAD/ÁREA</label>
-                <input type="text" class="form-control" placeholder="Ej. Ingeniería">
+                <input type="text" class="form-control" placeholder="Ej. Ingeniería" name="regFacultad" [(ngModel)]="regFacultad">
               </div>
             </div>
 
             <div class="mb-4">
-              <label class="form-label small fw-bold text-muted mb-1">CONTRASEÑA</label>
-              <input type="password" class="form-control" placeholder="Crea una contraseña segura">
+              <label class="form-label small fw-bold text-muted mb-1">CONTRASEÑA *</label>
+              <input type="password" class="form-control" placeholder="Crea una contraseña segura" name="regPassword" [(ngModel)]="regPassword" required #regPass="ngModel" [ngClass]="{'is-invalid': formEnviado && regPass.invalid}">
             </div>
             
             <div class="d-grid gap-2 mt-2">
-              <button type="button" class="btn btn-success fw-bold" (click)="setMode('login')">Registrarme</button>
+              <button type="submit" class="btn btn-success fw-bold">Registrarme</button>
             </div>
             
             <div class="text-center mt-3">
@@ -101,19 +120,16 @@
         <div *ngIf="authMode === 'forgot'">
           <div class="text-center mb-4">
             <h3 class="card-title fw-bold">Recuperar Contraseña</h3>
-            <p class="text-muted small mt-2">Ingresa el correo electrónico asociado a tu cuenta y te enviaremos las instrucciones para restablecer tu acceso.</p>
+            <p class="text-muted small mt-2">Ingresa el correo electrónico asociado a tu cuenta.</p>
           </div>
-          
           <form>
             <div class="mb-4">
               <label class="form-label fw-bold">Correo Electrónico</label>
               <input type="email" class="form-control" placeholder="tu@correo.com">
             </div>
-            
             <div class="d-grid gap-2">
-              <button type="button" class="btn btn-primary fw-bold" (click)="recuperarPassword()">Enviar Enlace de Recuperación</button>
+              <button type="button" class="btn btn-primary fw-bold" (click)="recuperarPassword()">Enviar Enlace</button>
             </div>
-            
             <div class="text-center mt-4">
               <a href="javascript:void(0)" class="text-decoration-none text-muted" (click)="setMode('login')">← Volver al Login</a>
             </div>

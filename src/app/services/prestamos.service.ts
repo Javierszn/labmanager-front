@@ -9,23 +9,42 @@ export class PrestamosService {
 
   constructor(private http: HttpClient) {}
 
+  // 1. Alumno: Crear solicitud
   crearPrestamo(datosPrestamo: any) {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.post<any>(this.baseUrl, datosPrestamo, { headers });
   }
 
+  // 2. Alumno: Ver su propio historial
   obtenerMisPrestamos() {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.get<any>(`${this.baseUrl}/mis-prestamos`, { headers }); 
   }
 
-  // NUEVA FUNCIÓN PARA CANCELAR
+  // 3. Alumno: Cancelar su propia solicitud
   cancelarPrestamo(idPrestamo: string) {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
-    // Haremos una petición PUT al backend para cambiar el estado
     return this.http.put<any>(`${this.baseUrl}/cancelar/${idPrestamo}`, {}, { headers });
+  }
+
+  // ==========================================
+  // NUEVOS MÉTODOS PARA EL ADMINISTRADOR
+  // ==========================================
+
+  // 4. Admin: Traer TODOS los préstamos de la universidad
+  obtenerTodosPrestamos() {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('x-token', token);
+    return this.http.get<any>(`${this.baseUrl}/admin`, { headers });
+  }
+
+  // 5. Admin: Cambiar estado a 'Activo', 'Devuelto' o 'Rechazado'
+  actualizarEstadoPrestamo(idPrestamo: string, nuevoEstado: string) {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('x-token', token);
+    return this.http.put<any>(`${this.baseUrl}/admin/${idPrestamo}`, { estado: nuevoEstado }, { headers });
   }
 }

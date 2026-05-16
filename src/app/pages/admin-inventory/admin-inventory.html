@@ -20,7 +20,7 @@
       <div class="card card-kpi border-0 bg-success bg-opacity-10 border-start border-success border-4 shadow-sm">
         <div class="card-body p-3 d-flex align-items-center">
           <i class="bi bi-box-seam fs-1 text-success me-3"></i>
-          <div><h6 class="text-muted mb-0">Equipos en Préstamo</h6><h3 class="fw-bold mb-0">{{ totalPrestados }}</h3></div>
+          <div><h6 class="text-muted mb-0">Equipos Activos (Prestados)</h6><h3 class="fw-bold mb-0">{{ totalPrestados }}</h3></div>
         </div>
       </div>
     </div>
@@ -55,28 +55,26 @@
         <button class="btn btn-success fw-bold shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalNuevoEquipo"><i class="bi bi-plus-lg me-2"></i>Nuevo Equipo</button>
       </div>
       <div class="card shadow-sm border-0">
-        <table class="table table-hover mb-0 align-middle custom-table">
+        <table class="table table-hover mb-0 align-middle custom-table text-center">
           <thead class="table-dark">
-            <tr><th class="text-center">Foto</th><th>ID</th><th>Nombre del Equipo</th><th>Descripción</th><th>Stock</th><th class="text-center">Ajustes</th></tr>
+            <tr><th class="text-center">Foto</th><th>ID</th><th class="text-start">Nombre del Equipo</th><th class="text-start">Descripción</th><th>Stock Disponible</th><th class="text-center">Ajustes</th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let equipo of equipos">
               <td class="text-center"><img [src]="equipo.img" alt="Foto" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;" class="shadow-sm border"></td>
-              <td class="fw-bold text-muted">{{ equipo.id }}</td>
-              <td class="fw-bold">{{ equipo.nombre }}</td>
-              <td class="text-muted small">{{ equipo.descripcion }}</td>
+              <td class="fw-bold text-muted">#{{ equipo.id ? equipo.id.substring(0, 6) : '---' }}</td>
+              <td class="fw-bold text-start">{{ equipo.nombre }}</td>
+              <td class="text-muted small text-start">{{ equipo.descripcion }}</td>
               <td><span class="badge" [ngClass]="equipo.stock > 0 ? 'bg-primary' : 'bg-danger'">{{ equipo.stock }}</span></td>
               
               <td class="text-center">
-                <button class="btn btn-sm btn-white border shadow-sm rounded-pill fw-bold px-3 py-1 btn-hover-edit" 
+                <button class="btn btn-var btn-sm btn-white border shadow-sm rounded-pill fw-bold px-3 py-1 btn-hover-edit" 
                         data-bs-toggle="modal" 
                         data-bs-target="#modalEditarEquipo" 
-                        (click)="abrirEditar(equipo)" 
-                        title="Haga clic para editar detalles del equipo">
+                        (click)="abrirEditar(equipo)">
                   <i class="bi bi-pencil-fill text-primary me-2"></i>Editar
                 </button>
               </td>
-
             </tr>
           </tbody>
         </table>
@@ -93,53 +91,62 @@
       </div>
 
       <div class="card shadow-sm border-0 rounded-10 overflow-hidden">
-        <table class="table table-hover mb-0 align-middle custom-table">
+        <table class="table table-hover mb-0 align-middle custom-table text-center">
           <thead class="table-dark">
-            <tr><th>Folio</th><th>Alumno</th><th>Equipo</th><th>Fechas Autorizadas</th><th>Estado</th><th class="text-center">Acción</th></tr>
+            <tr><th>Folio / ID</th><th class="text-start">Alumno</th><th class="text-start">Materiales Solicitados</th><th>Fechas Autorizadas</th><th>Estado</th><th class="text-center">Acciones del Laboratorista</th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let sol of solicitudesFiltradas">
-              <td class="fw-bold text-primary">#{{ sol.folio }}</td>
-              <td><i class="bi bi-person-circle text-muted me-2"></i>{{ sol.alumno }}</td>
-              <td class="fw-500 text-dark">{{ sol.equipo }}</td>
+              <td class="fw-bold text-primary">#{{ sol._id ? sol._id.substring(0, 7) : '----' }}</td>
+              <td class="text-start">
+                <div class="fw-bold text-dark"><i class="bi bi-person-circle text-muted me-2"></i>{{ sol.usuario?.nombre || 'Alumno Desconocido' }}</div>
+                <div class="text-muted small ms-4">{{ sol.usuario?.matricula || 'Sin matrícula' }}</div>
+              </td>
+              <td class="text-start">
+                <div *ngFor="let item of sol.equipos" class="mb-1">
+                  <span class="fw-500 text-dark">• {{ item.equipo?.nombre || 'Material eliminado' }}</span>
+                  <span class="badge bg-secondary ms-2">x{{ item.cantidad }}</span>
+                </div>
+              </td>
               <td class="small">
-                <div class="text-muted"><i class="bi bi-arrow-right-short text-success"></i> Salida: <strong>{{ sol.fechaSalida | date:'dd MMM, yyyy' }}</strong></div>
-                <div class="text-muted"><i class="bi bi-arrow-left-short text-danger"></i> Límite: <strong>{{ sol.fechaEntrega | date:'dd MMM, yyyy' }}</strong></div>
+                <div class="text-muted"><i class="bi bi-arrow-right-short text-success"></i> Salida: <strong>{{ sol.fechaSalida | date:'dd/MM/yyyy':'UTC' }}</strong></div>
+                <div class="text-muted"><i class="bi bi-arrow-left-short text-danger"></i> Límite: <strong>{{ sol.fechaLimite | date:'dd/MM/yyyy':'UTC' }}</strong></div>
               </td>
               <td>
-                <span class="badge rounded-pill shadow-sm px-3 py-2" style="font-size: 0.85rem;"
+                <span class="badge rounded-pill shadow-sm px-3 py-2 text-uppercase" style="font-size: 0.82rem;"
                       [ngClass]="{'bg-warning text-dark': sol.estado === 'Pendiente', 
-                                  'bg-success text-white': sol.estado === 'Aprobado', 
-                                  'bg-danger text-white': sol.estado === 'Rechazado' || sol.estado === 'Sancionado', 
-                                  'bg-secondary text-white': sol.estado === 'Devuelto'}">
-                  {{ sol.estado }}
+                                  'bg-primary text-white': sol.estado === 'Activo', 
+                                  'bg-danger text-white': sol.estado === 'Rechazado' || sol.estado === 'Atrasado', 
+                                  'bg-success text-white': sol.estado === 'Devuelto',
+                                  'bg-secondary text-white': sol.estado === 'Cancelado'}">
+                  {{ sol.estado || 'Pendiente' }}
                 </span>
               </td>
-              <td class="text-center" style="min-width: 200px;">
+              <td class="text-center" style="min-width: 210px;">
                 
-                <div class="d-flex flex-column gap-2" *ngIf="sol.estado === 'Pendiente'">
-                  <button class="btn btn-success btn-sm shadow-sm fw-bold d-flex align-items-center justify-content-center w-100" (click)="aprobarSolicitud(sol)">
-                    <i class="bi bi-check-circle-fill me-2"></i> Aprobar
+                <div class="d-flex gap-2" *ngIf="sol.estado === 'Pendiente'">
+                  <button class="btn btn-success btn-sm shadow-sm fw-bold w-50" (click)="procesarEstadoPrestamo(sol._id, 'Activo')">
+                    <i class="bi bi-check-circle-fill"></i> Aprobar
                   </button>
-                  <button class="btn btn-outline-danger btn-sm fw-bold d-flex align-items-center justify-content-center w-100" (click)="rechazarSolicitud(sol)">
-                    <i class="bi bi-x-circle me-2"></i> Rechazar
+                  <button class="btn btn-outline-danger btn-sm fw-bold w-50" (click)="procesarEstadoPrestamo(sol._id, 'Rechazado')">
+                    <i class="bi bi-x-circle"></i> Rechazar
                   </button>
                 </div>
 
-                <div *ngIf="sol.estado === 'Aprobado' || sol.estado === 'Sancionado'">
-                  <button class="btn btn-primary btn-sm shadow-sm fw-bold rounded-pill w-100 d-flex align-items-center justify-content-center" (click)="marcarDevuelto(sol)">
-                    <i class="bi bi-arrow-return-left me-2"></i> Recibir Equipo
+                <div *ngIf="sol.estado === 'Activo' || sol.estado === 'Atrasado'">
+                  <button class="btn btn-primary btn-sm shadow-sm fw-bold rounded-pill w-100" (click)="procesarEstadoPrestamo(sol._id, 'Devuelto')">
+                    <i class="bi bi-arrow-return-left me-2"></i> Recibir Material
                   </button>
                 </div>
                 
-                <div *ngIf="sol.estado === 'Devuelto' || sol.estado === 'Rechazado'">
-                   <span class="text-muted small fst-italic">Sin acciones</span>
+                <div *ngIf="sol.estado === 'Devuelto' || sol.estado === 'Rechazado' || sol.estado === 'Cancelado'">
+                   <span class="text-muted small fst-italic">Cerrado / Sin acciones</span>
                 </div>
 
               </td>
             </tr>
             <tr *ngIf="solicitudesFiltradas.length === 0">
-              <td colspan="6" class="text-center py-4 text-muted">No se encontraron solicitudes con esa búsqueda.</td>
+              <td colspan="6" class="text-center py-5 text-muted">📭 No hay solicitudes registradas con ese término de búsqueda.</td>
             </tr>
           </tbody>
         </table>
@@ -148,15 +155,15 @@
 
     <div class="tab-pane fade" id="usuarios">
       <div class="card shadow-sm border-0">
-        <table class="table table-hover mb-0 align-middle custom-table">
+        <table class="table table-hover mb-0 align-middle custom-table text-center">
           <thead class="table-dark">
-            <tr><th>Matrícula</th><th>Nombre Completo</th><th>Correo Institucional</th><th>Estado</th><th class="text-center">Control</th></tr>
+            <tr><th>Matrícula</th><th class="text-start">Nombre Completo</th><th class="text-start">Correo Institucional</th><th>Estado</th><th class="text-center">Control</th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let alumno of alumnos">
               <td class="fw-bold text-muted">{{ alumno.matricula }}</td>
-              <td class="fw-bold">{{ alumno.nombre }}</td>
-              <td class="text-muted"><i class="bi bi-envelope me-2"></i>{{ alumno.correo }}</td>
+              <td class="fw-bold text-start">{{ alumno.nombre }}</td>
+              <td class="text-muted text-start"><i class="bi bi-envelope me-2"></i>{{ alumno.correo }}</td>
               <td><span class="badge rounded-pill" [ngClass]="alumno.estado === 'Activo' ? 'bg-success' : 'bg-danger'">{{ alumno.estado }}</span></td>
               <td class="text-center">
                 <button class="btn btn-sm shadow-sm w-100" [ngClass]="alumno.estado === 'Activo' ? 'btn-outline-danger' : 'btn-warning text-dark'" (click)="cambiarEstadoAlumno(alumno)">
@@ -180,14 +187,11 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        
         <div class="text-center mb-3" *ngIf="nuevaImagenTemp">
           <img [src]="nuevaImagenTemp" alt="Previsualización" class="rounded shadow-sm" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;">
         </div>
-
         <div class="mb-3"><label class="form-label fw-bold small text-muted">NOMBRE DEL EQUIPO</label><input type="text" class="form-control" #nombreInput></div>
         <div class="mb-3"><label class="form-label fw-bold small text-muted">DESCRIPCIÓN</label><textarea class="form-control" rows="2" #descInput></textarea></div>
-        
         <div class="row">
           <div class="col-md-4 mb-3">
             <label class="form-label fw-bold small text-muted">STOCK INICIAL</label>
@@ -218,11 +222,9 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        
         <div class="text-center mb-4">
           <img [src]="equipoEditando.img" alt="Previsualización" class="rounded shadow-sm" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;">
         </div>
-
         <div class="mb-3">
           <label class="form-label fw-bold small text-muted">NOMBRE DEL EQUIPO</label>
           <input type="text" class="form-control" [(ngModel)]="equipoEditando.nombre">
@@ -246,6 +248,20 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal" (click)="guardarEdicion()">Guardar Cambios</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 1055;">
+  <div class="toast align-items-center text-white border-0 shadow-lg fade" 
+       [ngClass]="tipoToast === 'success' ? 'bg-success' : 'bg-danger'"
+       [class.show]="mostrarToast" [style.display]="mostrarToast ? 'block' : 'none'">
+    <div class="d-flex">
+      <div class="toast-body fw-bold fs-6 py-3 px-4">
+        <i class="bi" [ngClass]="tipoToast === 'success' ? 'bi-check-circle me-2' : 'bi-x-circle me-2'"></i>
+        {{ mensajeToast }}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" (click)="mostrarToast = false"></button>
     </div>
   </div>
 </div>

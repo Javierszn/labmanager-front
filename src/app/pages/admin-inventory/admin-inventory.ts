@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { EquiposService } from '../../services/equipos.service';
+import { PrestamosService } from '../../services/prestamos.service';
 
 @Component({
   selector: 'app-admin-inventory',
@@ -9,48 +11,122 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './admin-inventory.html',
   styleUrl: './admin-inventory.css'
 })
-export class AdminInventory {
+export class AdminInventory implements OnInit {
   
-  // Variables para la interfaz
+  // Variables para la interfaz de búsqueda
   terminoBusquedaSolicitudes: string = '';
   equipoEditando: any = { id: '', nombre: '', descripcion: '', stock: 0, img: '' };
   nuevaImagenTemp: string = '';
 
-  equipos = [
-    { id: 'EQ-001', nombre: 'Multímetro Fluke 87V', descripcion: 'Multímetro digital industrial', stock: 5, img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&q=80' },
-    { id: 'EQ-002', nombre: 'Osciloscopio Tektronix', descripcion: 'Digital, 2 canales, 100MHz', stock: 2, img: 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?w=500&q=80' }
-  ];
+  // Arreglos dinámicos conectados al Backend
+  equipos: any[] = [];
+  solicitudes: any[] = [];
+  alumnos: any[] = []; // Puedes usarlo más adelante si creas rutas de usuarios
 
-  // DATOS SINCRONIZADOS CON EL HISTORIAL DEL ALUMNO
-  solicitudes = [
-    { folio: '2026-899', alumno: 'Javier García', equipo: 'Osciloscopio Tektronix', fechaSalida: '2026-02-14', fechaEntrega: '2026-02-17', estado: 'Aprobado' },
-    { folio: '2026-850', alumno: 'Javier García', equipo: 'Fuente de Poder', fechaSalida: '2026-02-10', fechaEntrega: '2026-02-11', estado: 'Devuelto' },
-    { folio: '2026-700', alumno: 'Javier García', equipo: 'Kit Raspberry Pi', fechaSalida: '2026-02-01', fechaEntrega: '2026-02-04', estado: 'Sancionado' },
-    { folio: '2026-905', alumno: 'María López', equipo: 'Arduino Uno R3', fechaSalida: '2026-03-25', fechaEntrega: '2026-03-28', estado: 'Pendiente' },
-    { folio: '2026-910', alumno: 'Carlos Ruiz', equipo: 'Multímetro Fluke 87V', fechaSalida: '2026-03-26', fechaEntrega: '2026-03-27', estado: 'Pendiente' }
-  ];
+  // Controladores de carga
+  cargandoInventario: boolean = true;
+  cargandoPrestamos: boolean = true;
 
-  alumnos = [
-    { matricula: '320123', nombre: 'Javier García', correo: 'javier@alumnos.uaslp.mx', estado: 'Sancionado' }, // Sancionado por el Raspberry
-    { matricula: '320456', nombre: 'María López', correo: 'maria@alumnos.uaslp.mx', estado: 'Activo' },
-    { matricula: '320789', nombre: 'Carlos Ruiz', correo: 'carlos@alumnos.uaslp.mx', estado: 'Activo' }
-  ];
+  // Sistema de Toasts Dinámicos y Llamativos
+  mostrarToast: boolean = false;
+  mensajeToast: string = '';
+  tipoToast: string = 'success';
 
-  // --- GETTERS PARA LAS TARJETAS DE RESUMEN ---
-  get totalPendientes() { return this.solicitudes.filter(s => s.estado === 'Pendiente').length; }
-  get totalPrestados() { return this.solicitudes.filter(s => s.estado === 'Aprobado').length; }
-  get totalSancionados() { return this.alumnos.filter(a => a.estado === 'Sancionado').length; }
+  constructor(
+    private equiposService: EquiposService,
+    private prestamosService: PrestamosService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  // --- GETTER PARA EL BUSCADOR DE SOLICITUDES ---
-  get solicitudesFiltradas() {
-    return this.solicitudes.filter(sol => 
-      sol.folio.toLowerCase().includes(this.terminoBusquedaSolicitudes.toLowerCase()) ||
-      sol.alumno.toLowerCase().includes(this.terminoBusquedaSolicitudes.toLowerCase()) ||
-      sol.equipo.toLowerCase().includes(this.terminoBusquedaSolicitudes.toLowerCase())
-    );
+  ngOnInit() {
+    this.cargarInventarioReal();
+    this.cargarPrestamosGlobalesReal();
   }
 
-  // --- FUNCIONES EXISTENTES ---
+  mostrarNotificacion(mensaje: string, tipo: string = 'success') {
+    this.mensajeToast = mensaje;
+    this.tipoToast = tipo;
+    this.mostrarToast = true;
+    this.cdr.detectChanges();
+
+    setTimeout(() => { 
+      this.mostrarToast = false; 
+      this.cdr.detectChanges();
+    }, 3500);
+  }
+
+  // --- TRAER INVENTARIO DESDE MONGO ---
+  cargarInventarioReal() {
+    this.equiposService.obtenerEquipos().subscribe({
+      next: (res) => {
+        this.equipos = res.equipos.map((eq: any) => ({
+          ...eq,
+          id: eq._id,
+          stock: eq.stockDisponible,
+          img: eq.img || eq.imagenUrl || 'https://placehold.co/600x400/eeeeee/000000?text=Sin+Imagen'
+        }));
+        this.cargandoInventario = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarNotificacion('⚠️ Error al conectar con el inventario', 'danger');
+        this.cargandoInventario = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // --- TRAER TODOS LOS PRÉSTAMOS DE LA UNIVERSIDAD DESDE MONGO ---
+  cargarPrestamosGlobalesReal() {
+    this.prestamosService.obtenerTodosPrestamos().subscribe({
+      next: (res) => {
+        this.solicitudes = res.prestamos;
+        this.cargandoPrestamos = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarNotificacion('⚠️ Error al cargar solicitudes globales', 'danger');
+        this.cargandoPrestamos = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // --- GETTERS DINÁMICOS PARA LAS TARJETAS KPI ---
+  get totalPendientes() { return this.solicitudes.filter(s => s.estado === 'Pendiente').length; }
+  get totalPrestados() { return this.solicitudes.filter(s => s.estado === 'Activo').length; }
+  get totalSancionados() { return this.alumnos.filter(a => a.estado === 'Sancionado').length; }
+
+  // --- BUSCADOR DINÁMICO ---
+  get solicitudesFiltradas() {
+    return this.solicitudes.filter(sol => {
+      const termino = this.terminoBusquedaSolicitudes.toLowerCase();
+      const folioId = sol._id ? sol._id.substring(0, 7).toLowerCase() : '';
+      const nombreAlumno = sol.usuario?.nombre ? sol.usuario.nombre.toLowerCase() : '';
+      const primerEquipo = sol.equipos && sol.equipos[0]?.equipo?.nombre ? sol.equipos[0].equipo.nombre.toLowerCase() : '';
+      
+      return folioId.includes(termino) || nombreAlumno.includes(termino) || primerEquipo.includes(termino);
+    });
+  }
+
+  // --- ACCIONES EN CALIENTE DEL LABORATORISTA ---
+  procesarEstadoPrestamo(idPrestamo: string, nuevoEstado: string) {
+    this.prestamosService.actualizarEstadoPrestamo(idPrestamo, nuevoEstado).subscribe({
+      next: (res) => {
+        this.mostrarNotificacion(`🟢 Solicitud actualizada a [${nuevoEstado.toUpperCase()}] con éxito.`, 'success');
+        this.cargarPrestamosGlobalesReal(); // Recarga la tabla de préstamos
+        this.cargarInventarioReal();       // Recarga el inventario por si varió el stock
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarNotificacion('❌ Hubo un error al cambiar el estado en el servidor.', 'danger');
+      }
+    });
+  }
+
+  // --- MANEJO DE IMÁGENES Y LOGICA LOCAL EXISTENTE ---
   onFileSelected(event: any, tipo: 'nuevo' | 'editar') {
     const file = event.target.files[0];
     if (file) {
@@ -70,19 +146,18 @@ export class AdminInventory {
       img: this.nuevaImagenTemp || 'https://placehold.co/600x400/eeeeee/000000?text=Sin+Imagen'
     });
     this.nuevaImagenTemp = '';
+    this.mostrarNotificacion('✅ Equipo simulado en local.', 'success');
   }
 
   abrirEditar(equipo: any) { this.equipoEditando = { ...equipo }; }
   
   guardarEdicion() {
     const index = this.equipos.findIndex(e => e.id === this.equipoEditando.id);
-    if (index !== -1) this.equipos[index] = { ...this.equipoEditando };
+    if (index !== -1) {
+      this.equipos[index] = { ...this.equipoEditando };
+      this.mostrarNotificacion('📋 Cambios del equipo guardados.', 'success');
+    }
   }
-
-  // Ahora con colores para mantener coherencia si cambias el estado
-  aprobarSolicitud(solicitud: any) { solicitud.estado = 'Aprobado'; }
-  rechazarSolicitud(solicitud: any) { solicitud.estado = 'Rechazado'; }
-  marcarDevuelto(solicitud: any) { solicitud.estado = 'Devuelto'; }
 
   cambiarEstadoAlumno(alumno: any) {
     alumno.estado = alumno.estado === 'Activo' ? 'Sancionado' : 'Activo';

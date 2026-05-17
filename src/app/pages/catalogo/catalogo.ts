@@ -1,8 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
+import { Router } from '@angular/router';
 import { EquiposService } from '../../services/equipos.service';
 import { PrestamosService } from '../../services/prestamos.service'; 
+import { CategoriasService } from '../../services/categorias.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -13,26 +15,48 @@ import { PrestamosService } from '../../services/prestamos.service';
 })
 export class Catalogo implements OnInit {
   terminoBusqueda: string = '';
+  categoriaFiltro: string = ''; 
+  
   mostrarToast: boolean = false;
   mensajeToast: string = '';
+  tipoToast: string = 'success'; 
 
   equipoSeleccionado: any = null;
   equipoParaAgregar: any = null;
   fechaSalidaTemp: string = '';
   fechaEntregaTemp: string = '';
-  cantidadTemp: number = 1; // <-- Nueva variable para la cantidad
+  cantidadTemp: number = 1; 
 
   equipos: any[] = [];
+  categorias: any[] = []; 
   carrito: any[] = [];
 
   constructor(
     private equiposService: EquiposService,
     private prestamosService: PrestamosService,
+    private categoriasService: CategoriasService,
+    private router: Router,
     private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit() {
     this.cargarEquiposReales();
+    this.cargarCategorias(); 
+  }
+
+  // GETTER DINÁMICO: Siempre sabe exactamente si hay token en tiempo real
+  get tieneSesion(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  cargarCategorias() {
+    this.categoriasService.obtenerCategorias().subscribe({
+      next: (res: any) => {
+        this.categorias = res.categorias;
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => console.error('Error al cargar categorías', err)
+    });
   }
 
   cargarEquiposReales() {
@@ -48,17 +72,18 @@ export class Catalogo implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar inventario:', err);
-        this.mostrarNotificacion('⚠️ Error al conectar con la base de datos');
-        this.cdr.detectChanges();
+        this.mostrarNotificacion('⚠️ Error al conectar con la base de datos', 'danger');
       }
     });
   }
 
   get equiposFiltrados() {
-    return this.equipos.filter(equipo => 
-      equipo.nombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) ||
-      (equipo.categoria?.nombre || '').toLowerCase().includes(this.terminoBusqueda.toLowerCase())
-    );
+    return this.equipos.filter(equipo => {
+      const coincideTexto = equipo.nombre.toLowerCase().includes(this.terminoBusqueda.toLowerCase()) ||
+                            (equipo.categoria?.nombre || '').toLowerCase().includes(this.terminoBusqueda.toLowerCase());
+      const coincideCategoria = this.categoriaFiltro === '' || equipo.categoria?._id === this.categoriaFiltro;
+      return coincideTexto && coincideCategoria;
+    });
   }
 
   abrirDetalles(equipo: any) {
@@ -66,36 +91,44 @@ export class Catalogo implements OnInit {
     this.cdr.detectChanges();
   }
 
-  mostrarNotificacion(mensaje: string) {
+  mostrarNotificacion(mensaje: string, tipo: string = 'success') {
     this.mensajeToast = mensaje;
+    this.tipoToast = tipo;
     this.mostrarToast = true;
     this.cdr.detectChanges();
+    setTimeout(() => { this.mostrarToast = false; this.cdr.detectChanges(); }, 4000); 
+  }
 
-    setTimeout(() => { 
-      this.mostrarToast = false; 
-      this.cdr.detectChanges();
-    }, 3000);
+  irALogin() {
+    this.mostrarNotificacion('🔒 Necesitas iniciar sesión para solicitar equipo.', 'warning');
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 1500);
   }
 
   prepararAgregar(equipo: any) {
-    if (!localStorage.getItem('token')) {
-      this.mostrarNotificacion('🔒 Necesitas iniciar sesión para pedir material');
-      return;
-    }
-    
     this.equipoParaAgregar = equipo;
     this.fechaSalidaTemp = '';
     this.fechaEntregaTemp = '';
-    this.cantidadTemp = 1; // <-- Reiniciamos a 1 cada que abre un equipo
+    this.cantidadTemp = 1; 
     this.cdr.detectChanges();
   }
 
   confirmarAgregarAlCarrito() {
+    if (!this.tieneSesion) {
+      this.irALogin();
+      return;
+    }
+
+    const estadoUsuario = localStorage.getItem('estado') || 'Activo';
+    if (estadoUsuario === 'Sancionado') {
+      this.mostrarNotificacion('⚠️ Acción bloqueada: No puedes solicitar material porque tu cuenta está Sancionada.', 'danger');
+      return;
+    }
+
     const yaExiste = this.carrito.find(item => item.id === this.equipoParaAgregar.id);
-    
-    // <-- Validación de cantidad agregada
     if (this.cantidadTemp < 1 || this.cantidadTemp > this.equipoParaAgregar.stock) {
-      this.mostrarNotificacion(`⚠️ Cantidad inválida. Máximo disponible: ${this.equipoParaAgregar.stock}`);
+      this.mostrarNotificacion(`⚠️ Cantidad inválida. Máximo disponible: ${this.equipoParaAgregar.stock}`, 'warning');
       return;
     }
 
@@ -104,11 +137,11 @@ export class Catalogo implements OnInit {
         ...this.equipoParaAgregar,
         fechaSalida: this.fechaSalidaTemp,
         fechaEntrega: this.fechaEntregaTemp,
-        cantidadSolicitada: this.cantidadTemp // <-- Pasamos la cantidad ingresada
+        cantidadSolicitada: this.cantidadTemp 
       });
-      this.mostrarNotificacion(`✅ ${this.cantidadTemp}x ${this.equipoParaAgregar.nombre} agregado(s).`);
+      this.mostrarNotificacion(`✅ ${this.cantidadTemp}x ${this.equipoParaAgregar.nombre} agregado(s).`, 'success');
     } else {
-      this.mostrarNotificacion(`⚠️ El equipo ya está en tu carrito.`);
+      this.mostrarNotificacion(`⚠️ El equipo ya está en tu carrito.`, 'warning');
     }
   }
 
@@ -122,7 +155,7 @@ export class Catalogo implements OnInit {
 
     const equiposMapeados = this.carrito.map(item => ({
       equipo: item.id, 
-      cantidad: item.cantidadSolicitada || 1 // <-- Mandamos a la BD la cantidad real
+      cantidad: item.cantidadSolicitada || 1 
     }));
 
     const payload = {
@@ -133,15 +166,22 @@ export class Catalogo implements OnInit {
 
     this.prestamosService.crearPrestamo(payload).subscribe({
       next: (respuesta) => {
-        this.mostrarNotificacion(`🎉 ¡Préstamo registrado exitosamente!`);
+        this.mostrarNotificacion('🎉 ¡Préstamo registrado exitosamente!', 'success');
         this.carrito = []; 
         this.cargarEquiposReales(); 
       },
       error: (err) => {
         console.error('Error al pedir préstamo:', err);
+
+        if (err.status === 401) {
+          this.mostrarNotificacion('🔒 Tu sesión expiró o es inválida. Redirigiendo...', 'danger');
+          localStorage.clear();
+          setTimeout(() => this.router.navigate(['/login']), 1500);
+          return;
+        }
+
         const mensajeReal = err.error?.msg || 'Error al procesar la solicitud';
-        this.mostrarNotificacion(`❌ ${mensajeReal}`);
-        this.cdr.detectChanges();
+        this.mostrarNotificacion(`${mensajeReal}`, 'danger');
       }
     });
   }

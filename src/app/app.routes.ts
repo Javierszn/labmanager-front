@@ -1,6 +1,5 @@
-import { Routes } from '@angular/router';
+import { Routes, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Home } from './pages/home/home';
 import { Login } from './pages/login/login';
@@ -10,34 +9,37 @@ import { Catalogo } from './pages/catalogo/catalogo';
 import { Perfil } from './pages/perfil/perfil';
 
 // ---------------------------------------------------------
-// GUARDIAS DE RUTA (Seguridad simulada con localStorage)
+// GUARDIAS DE RUTA FUNCIONALES (Seguridad Frontend)
 // ---------------------------------------------------------
 
-// Guardia: Solo usuarios logueados (Alumno o Admin)
+// Guardia 1: Verifica que el usuario tenga una sesión activa (Token)
 const authGuard = () => {
-  const rol = localStorage.getItem('rol');
-  if (rol === 'alumno' || rol === 'admin') return true;
+  const token = localStorage.getItem('token');
+  if (token) return true; 
   
+  // Si no hay token, lo mandamos a iniciar sesión
   const router = inject(Router);
   router.navigate(['/login']);
   return false;
 };
 
-// Guardia: Solo Administradores
+// Guardia 2: Verifica que el usuario tenga el rol de Administrador
 const adminGuard = () => {
   const rol = localStorage.getItem('rol');
-  if (rol === 'admin') return true;
+  if (rol === 'admin') return true; 
   
+  // Si es un alumno queriendo entrar al panel, lo regresamos al inicio
   const router = inject(Router);
   router.navigate(['/home']);
   return false;
 };
 
-// Guardia: Evita que alguien logueado vuelva a ver el Login
+// Guardia 3: Evita que alguien logueado vuelva a ver la pantalla de Login
 const noAuthGuard = () => {
-  const rol = localStorage.getItem('rol');
-  if (!rol || rol === 'visitante') return true;
+  const token = localStorage.getItem('token');
+  if (!token) return true; // Si no hay token, adelante, pasa al login
   
+  // Si ya hay token (ya inició sesión), lo mandamos al inicio
   const router = inject(Router);
   router.navigate(['/home']);
   return false;
@@ -49,19 +51,21 @@ const noAuthGuard = () => {
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, 
   
-  // PÚBLICAS (Todos pueden ver)
+  // PÚBLICAS (Todos pueden ver, visitantes y logueados)
   { path: 'home', component: Home }, 
   { path: 'catalogo', component: Catalogo },
   
-  // SOLO VISITANTES (Si ya entraste, no puedes ver el login de nuevo)
+  // SOLO VISITANTES (No puedes ver el login si ya entraste)
   { path: 'login', component: Login, canActivate: [noAuthGuard] },
   
   // SOLO ADMIN (Nivel máximo de acceso)
-  { path: 'admin/inventario', component: AdminInventory, canActivate: [adminGuard] },
+  // Nota: Pasa por los 2 filtros: ¿Está logueado? -> Sí -> ¿Es admin? -> Sí -> Entra.
+  { path: 'admin/inventario', component: AdminInventory, canActivate: [authGuard, adminGuard] },
   
-  // PRIVADAS (Requiere ser Alumno o Admin)
+  // PRIVADAS (Requiere estar logueado, sea alumno o admin)
   { path: 'alumno/historial', component: UserHistory, canActivate: [authGuard] },
   { path: 'alumno/perfil', component: Perfil, canActivate: [authGuard] }, 
   
+  // RUTA COMODÍN (Si escriben una URL que no existe, los manda al inicio)
   { path: '**', redirectTo: 'home', pathMatch: 'full' } 
 ];

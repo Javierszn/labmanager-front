@@ -5,34 +5,30 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class EquiposService {
-  private baseUrl = 'http://localhost:3000/api/equipos';
+export class SancionesService {
+  private baseUrl = 'http://localhost:3000/api/sanciones';
 
   constructor(private http: HttpClient) {}
 
-  // 1. Traer catálogo (AHORA LLEVA TOKEN POR SEGURIDAD)
-  obtenerEquipos(): Observable<any> {
+  obtenerSanciones(): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.get<any>(this.baseUrl, { headers });
   }
 
-  // 2. Crear un equipo nuevo en Mongo (Requiere ser Admin)
-  crearEquipo(datos: any): Observable<any> {
+  crearSancion(datos: any): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.post<any>(this.baseUrl, datos, { headers });
   }
 
-  // 3. Editar un equipo existente (Requiere ser Admin)
-  actualizarEquipo(id: string, datos: any): Observable<any> {
+  resolverSancion(id: string): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
-    return this.http.put<any>(`${this.baseUrl}/${id}`, datos, { headers });
+    return this.http.put<any>(`${this.baseUrl}/${id}/resolver`, {}, { headers });
   }
 
-  // 4. Eliminar/Dar de baja un equipo de la base de datos (Requiere ser Admin)
-  eliminarEquipo(id: string): Observable<any> {
+  eliminarSancion(id: string): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.delete<any>(`${this.baseUrl}/${id}`, { headers });

@@ -1,6 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
+import { AuthService } from '../../services/auth.service'; // <-- Importado
 
 @Component({
   selector: 'app-navbar',
@@ -17,7 +18,8 @@ export class Navbar implements OnInit {
 
   constructor(
     private router: Router,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private authService: AuthService // <-- Inyectado
   ) {}
 
   ngOnInit() {
@@ -40,10 +42,10 @@ export class Navbar implements OnInit {
   }
 
   cerrarSesion() {
-    // Le quitamos el gafete de admin/alumno
-    localStorage.removeItem('rol');
+    // Borramos TODOS los datos guardados en el LocalStorage
+    this.authService.logout();
     
-    // Lo enviamos de vuelta al login forzando la recarga
+    // Lo enviamos de vuelta al login forzando la recarga para limpiar memoria
     window.location.href = '/login'; 
   }
 }

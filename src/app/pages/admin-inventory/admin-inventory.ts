@@ -21,7 +21,7 @@ export class AdminInventory implements OnInit {
   // Arreglos dinámicos conectados al Backend
   equipos: any[] = [];
   solicitudes: any[] = [];
-  alumnos: any[] = []; // Puedes usarlo más adelante si creas rutas de usuarios
+  alumnos: any[] = []; 
 
   // Controladores de carga
   cargandoInventario: boolean = true;
@@ -116,8 +116,8 @@ export class AdminInventory implements OnInit {
     this.prestamosService.actualizarEstadoPrestamo(idPrestamo, nuevoEstado).subscribe({
       next: (res) => {
         this.mostrarNotificacion(`🟢 Solicitud actualizada a [${nuevoEstado.toUpperCase()}] con éxito.`, 'success');
-        this.cargarPrestamosGlobalesReal(); // Recarga la tabla de préstamos
-        this.cargarInventarioReal();       // Recarga el inventario por si varió el stock
+        this.cargarPrestamosGlobalesReal(); 
+        this.cargarInventarioReal();       
       },
       error: (err) => {
         console.error(err);
@@ -126,37 +126,70 @@ export class AdminInventory implements OnInit {
     });
   }
 
-  // --- MANEJO DE IMÁGENES Y LOGICA LOCAL EXISTENTE ---
+  // --- MANEJO DE IMÁGENES CON VISTA PREVIA AL INSTANTE ---
   onFileSelected(event: any, tipo: 'nuevo' | 'editar') {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        if (tipo === 'nuevo') this.nuevaImagenTemp = e.target.result;
-        else this.equipoEditando.img = e.target.result;
+        if (tipo === 'nuevo') {
+          this.nuevaImagenTemp = e.target.result;
+        } else {
+          this.equipoEditando.img = e.target.result;
+        }
+        this.cdr.detectChanges(); 
       };
       reader.readAsDataURL(file);
     }
   }
 
-  agregarEquipo(nombre: string, descripcion: string, stock: string) {
-    const nuevoId = 'EQ-00' + (this.equipos.length + 1);
-    this.equipos.push({ 
-      id: nuevoId, nombre, descripcion, stock: parseInt(stock) || 0,
-      img: this.nuevaImagenTemp || 'https://placehold.co/600x400/eeeeee/000000?text=Sin+Imagen'
-    });
-    this.nuevaImagenTemp = '';
-    this.mostrarNotificacion('✅ Equipo simulado en local.', 'success');
+  abrirEditar(equipo: any) { 
+    this.equipoEditando = { ...equipo }; 
   }
 
-  abrirEditar(equipo: any) { this.equipoEditando = { ...equipo }; }
+  // --- GUARDA EN MONGODB (CORREGIDO) ---
+  agregarEquipo(nombre: string, descripcion: string, stock: string) {
+    const payload = {
+      nombre: nombre,
+      descripcion: descripcion,
+      stockDisponible: parseInt(stock) || 0, 
+      img: this.nuevaImagenTemp || 'https://placehold.co/600x400/eeeeee/000000?text=Sin+Imagen',
+      imagenUrl: this.nuevaImagenTemp || 'https://placehold.co/600x400/eeeeee/000000?text=Sin+Imagen' // <-- Enviamos ambos nombres por seguridad
+    };
+
+    this.equiposService.crearEquipo(payload).subscribe({
+      next: (res) => {
+        this.mostrarNotificacion('✅ Equipo guardado en la base de datos.', 'success');
+        this.cargarInventarioReal(); 
+        this.nuevaImagenTemp = ''; 
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarNotificacion('❌ Error al guardar el equipo.', 'danger');
+      }
+    });
+  }
   
+  // --- ACTUALIZA EN MONGODB (CORREGIDO CON IMAGENURL) ---
   guardarEdicion() {
-    const index = this.equipos.findIndex(e => e.id === this.equipoEditando.id);
-    if (index !== -1) {
-      this.equipos[index] = { ...this.equipoEditando };
-      this.mostrarNotificacion('📋 Cambios del equipo guardados.', 'success');
-    }
+    const payload = {
+      nombre: this.equipoEditando.nombre,
+      descripcion: this.equipoEditando.descripcion,
+      stockDisponible: this.equipoEditando.stock, 
+      img: this.equipoEditando.img,
+      imagenUrl: this.equipoEditando.img // <-- Clave para que MongoDB guarde la nueva foto asíncrona
+    };
+
+    this.equiposService.actualizarEquipo(this.equipoEditando.id, payload).subscribe({
+      next: (res) => {
+        this.mostrarNotificacion('📋 Cambios del equipo guardados exitosamente.', 'success');
+        this.cargarInventarioReal(); 
+      },
+      error: (err) => {
+        console.error(err);
+        this.mostrarNotificacion('❌ Error al actualizar el equipo. Verifica permisos.', 'danger');
+      }
+    });
   }
 
   cambiarEstadoAlumno(alumno: any) {

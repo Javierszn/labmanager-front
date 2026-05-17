@@ -1,5 +1,5 @@
 /* ========================================== */
-/* CLASES DE COLOR DIRECTAS (A PRUEBA DE FALLOS) */
+/* CLASES DE COLOR DIRECTAS UASLP             */
 /* ========================================== */
 .bg-uaslp-navy {
   background-color: #004a99 !important;
@@ -12,7 +12,7 @@
   color: #f8c326 !important;
 }
 .text-white-75 {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 /* ========================================== */
@@ -23,71 +23,108 @@ body {
   font-family: 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Fondo con degradado azul usando colores directos */
 .home-hero {
-  background: linear-gradient(135deg, #004a99 0%, #003b7a 100%);
-  border-radius: 0 0 20px 20px; /* Bordes redondeados abajo */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #004a99 0%, #002b5e 100%);
+  border-radius: 0 0 40px 40px; 
+  box-shadow: 0 10px 30px rgba(0, 74, 153, 0.2);
+  min-height: 50vh;
 }
 
+/* Botón Amarillo Principal */
 .home-hero-btn {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: none;
+}
+.home-hero-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(248, 195, 38, 0.4) !important;
 }
 
-.home-hero-btn:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 8px 25px rgba(248, 195, 38, 0.4) !important;
+/* Botón Transparente Secundario */
+.home-hero-btn-outline {
+  border: 2px solid rgba(255,255,255,0.5);
+  transition: all 0.3s ease;
+}
+.home-hero-btn-outline:hover {
+  background-color: white;
+  color: #004a99;
+  border-color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(255, 255, 255, 0.2) !important;
 }
 
 /* ========================================== */
 /* TARJETAS MODERNAS                          */
 /* ========================================== */
 .card {
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08) !important;
 }
 
 .card-info {
   background-color: #004a99;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .bg-light-translucent {
   background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Tarjetas de Equipos */
 .card-equipo {
   background-color: #ffffff;
 }
 
+.transition-icon i {
+  transition: transform 0.3s ease;
+}
+.card-equipo:hover .transition-icon i {
+  transform: scale(1.15) rotate(5deg);
+}
+
 /* ========================================== */
-/* MODO OSCURO (NATIVO DE BOOTSTRAP 5.3)      */
+/* MODO OSCURO (NATIVO DE BOOTSTRAP)          */
 /* ========================================== */
 [data-bs-theme="dark"] body {
   background-color: #121212;
 }
 
 [data-bs-theme="dark"] .home-hero {
-  background: linear-gradient(135deg, #181a1d 0%, #111214 100%);
+  background: linear-gradient(135deg, #1a1d20 0%, #0d0f12 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 [data-bs-theme="dark"] .card-equipo {
-  background-color: #212529;
-  border: 1px solid #373b3e;
+  background-color: #1e2125;
+  border: 1px solid #373b3e !important;
 }
 
 [data-bs-theme="dark"] .card-equipo .bg-light {
-  background-color: #181a1d !important;
+  background-color: #2b3035 !important;
 }
 
 [data-bs-theme="dark"] .card-equipo h6,
 [data-bs-theme="dark"] .card-equipo .text-dark {
-  color: #dee2e6 !important;
+  color: #e9ecef !important;
+}
+
+[data-bs-theme="dark"] .bg-white {
+  background-color: #1e2125 !important;
+  color: #e9ecef !important;
+}
+.transition-card {
+  transition: transform 0.3s ease;
+}
+.transition-card:hover {
+  transform: translateY(-5px);
+}
+.transition-img img {
+  transition: transform 0.4s ease;
+}
+.transition-card:hover .transition-img img {
+  transform: scale(1.05);
 }

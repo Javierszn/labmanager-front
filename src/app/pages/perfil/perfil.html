@@ -8,29 +8,44 @@
     
     <div class="col-md-4">
       <div class="card shadow-sm border-0 text-center p-4 sticky-top" style="top: 20px;">
-        <div class="mb-3 position-relative d-inline-block mx-auto">
-          <img [src]="usuario.foto" alt="Foto de perfil" class="rounded-circle shadow-sm border border-3 border-primary" style="width: 128px; height: 128px; object-fit: cover;">
-          <button class="btn p-0 rounded-circle position-absolute bottom-0 end-0 shadow border border-white bg-white d-flex align-items-center justify-content-center" style="transform: translate(15%, 15%); width: 36px; height: 36px;" (click)="fileInput.click()" title="Editar Foto">
-            <img src="https://cdn-icons-png.flaticon.com/512/3659/3659853.png" alt="Editar" class="p-2" style="width: 100%; height: 100%; object-fit: contain;">
+        
+        <div class="mb-3 position-relative d-inline-block mx-auto" style="width: 140px; height: 140px;">
+          <img [src]="usuario.foto" alt="Foto de perfil" class="rounded-circle shadow-sm border border-3 border-primary bg-light w-100 h-100" style="object-fit: cover;">
+          
+          <button class="btn btn-light p-0 rounded-circle position-absolute shadow d-flex align-items-center justify-content-center" 
+                  style="bottom: 0px; right: 0px; width: 42px; height: 42px; z-index: 10; border: 2px solid white;" 
+                  (click)="fileInput.click()" title="Cambiar Foto">
+            <img src="https://cdn-icons-png.flaticon.com/512/3659/3659853.png" alt="Editar" style="width: 20px; height: 20px; object-fit: contain;">
           </button>
+          
+          <button *ngIf="usuario.foto !== fotoPorDefecto" 
+                  class="btn btn-light p-0 rounded-circle position-absolute shadow d-flex align-items-center justify-content-center" 
+                  style="bottom: 0px; left: 0px; width: 42px; height: 42px; z-index: 10; border: 2px solid white;" 
+                  (click)="eliminarFoto()" title="Eliminar Foto">
+            <img src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png" alt="Eliminar" style="width: 20px; height: 20px; object-fit: contain;">
+          </button>
+
           <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;">
         </div>
 
         <div class="mt-3">
-          <h4 class="fw-bold mb-0">{{ usuario.nombres }} {{ usuario.apellidoPaterno }} {{ usuario.apellidoMaterno }}</h4>
-          <p class="text-primary fw-bold mb-2">{{ usuario.institucion }}</p>
+          <h4 class="fw-bold mb-0">{{ usuario.nombre }}</h4>
+          <p class="text-primary fw-bold mb-2">Matrícula: {{ usuario.matricula || 'N/A' }}</p>
           
-          <span class="badge" [ngClass]="usuario.estado === 'Activo' ? 'bg-success' : 'bg-danger'">
-            Estado en Sistema: {{ usuario.estado }}
+          <span class="badge w-100 py-2 fs-6 mt-2" [ngClass]="usuario.estado === 'Activo' ? 'bg-success' : 'bg-danger'">
+            <i class="bi me-2" [ngClass]="usuario.estado === 'Activo' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill'"></i>
+            Estado: {{ usuario.estado }}
           </span>
+          <p *ngIf="usuario.estado === 'Sancionado'" class="text-danger small mt-2 fw-bold mb-0 lh-sm">
+            Acude al laboratorio para regularizar tu situación.
+          </p>
         </div>
         
         <hr class="my-3">
         
         <div class="text-start text-muted mb-3 small">
           <p class="mb-2"><i class="bi bi-envelope-fill me-2"></i>{{ usuario.correo }}</p>
-          <p class="mb-2"><i class="bi bi-telephone-fill me-2"></i>{{ usuario.telefono }}</p>
-          <p class="mb-0"><i class="bi bi-building me-2"></i>{{ usuario.facultad }}</p>
+          <p class="mb-0"><i class="bi bi-person-badge-fill me-2 text-capitalize"></i>Rol: {{ usuario.rol }}</p>
         </div>
 
         <button type="button" class="btn btn-danger w-100 fw-bold py-2 mt-2" (click)="cerrarSesion()">
@@ -49,30 +64,26 @@
           <form>
             <div class="row mb-3 g-3">
               <div class="col-md-12">
-                <label class="form-label text-muted small fw-bold">NOMBRE(S)</label>
-                <input type="text" class="form-control" name="nombres" [(ngModel)]="usuario.nombres">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label text-muted small fw-bold">APELLIDO PATERNO</label>
-                <input type="text" class="form-control" name="apPaterno" [(ngModel)]="usuario.apellidoPaterno">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label text-muted small fw-bold">APELLIDO MATERNO</label>
-                <input type="text" class="form-control" name="apMaterno" [(ngModel)]="usuario.apellidoMaterno">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label text-muted small fw-bold">TELÉFONO</label>
-                <input type="text" class="form-control" name="telefono" [(ngModel)]="usuario.telefono">
+                <label class="form-label text-muted small fw-bold">NOMBRE COMPLETO</label>
+                <input type="text" class="form-control" name="nombre" [(ngModel)]="usuario.nombre">
               </div>
               <div class="col-md-6">
                 <label class="form-label text-muted small fw-bold">CORREO ELECTRÓNICO</label>
                 <input type="email" class="form-control" name="correo" [(ngModel)]="usuario.correo">
               </div>
               <div class="col-md-6">
+                <label class="form-label text-muted small fw-bold">MATRÍCULA</label>
+                <input type="text" class="form-control bg-light" name="matricula" [(ngModel)]="usuario.matricula" disabled title="La matrícula no se puede modificar">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label text-muted small fw-bold">TELÉFONO</label>
+                <input type="text" class="form-control" name="telefono" [(ngModel)]="usuario.telefono">
+              </div>
+              <div class="col-md-4">
                 <label class="form-label text-muted small fw-bold">INSTITUCIÓN</label>
                 <input type="text" class="form-control" name="institucion" [(ngModel)]="usuario.institucion">
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label class="form-label text-muted small fw-bold">FACULTAD / ÁREA</label>
                 <input type="text" class="form-control" name="facultad" [(ngModel)]="usuario.facultad">
               </div>
@@ -93,11 +104,11 @@
             <div class="row mb-3 g-3">
               <div class="col-md-6">
                 <label class="form-label text-muted small fw-bold">NUEVA CONTRASEÑA</label>
-                <input type="password" class="form-control" placeholder="Escribe tu nueva contraseña">
+                <input type="password" class="form-control" name="passNueva" [(ngModel)]="passwords.nueva" placeholder="Escribe tu nueva contraseña">
               </div>
               <div class="col-md-6">
                 <label class="form-label text-muted small fw-bold">CONFIRMAR CONTRASEÑA</label>
-                <input type="password" class="form-control" placeholder="Repite la contraseña">
+                <input type="password" class="form-control" name="passConf" [(ngModel)]="passwords.confirmar" placeholder="Repite la contraseña">
               </div>
             </div>
             <div class="text-end mt-2">
@@ -107,21 +118,62 @@
         </div>
       </div>
 
-      <div class="card shadow-sm border-0 border-start border-4" [ngClass]="usuario.deuda === 0 ? 'border-success' : 'border-danger'">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <div>
-            <h5 class="fw-bold mb-1">Estado de Sanciones</h5>
-            <p class="text-muted mb-0" *ngIf="usuario.deuda === 0">No tienes multas ni bloqueos pendientes. ¡Gracias por entregar a tiempo!</p>
-            <p class="text-danger fw-bold mb-0" *ngIf="usuario.deuda > 0">Tienes una multa o bloqueo pendiente por entrega tardía.</p>
+      <div class="card shadow-sm border-0 border-start border-4" [ngClass]="misSanciones.length === 0 ? 'border-success' : 'border-danger'">
+        <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+          <h5 class="fw-bold"><i class="bi bi-shield-exclamation me-2"></i>Mi Historial de Sanciones</h5>
+        </div>
+        <div class="card-body">
+          
+          <div *ngIf="cargando" class="text-center py-4 text-muted">
+            <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+            <p>Cargando historial...</p>
           </div>
-          <div class="text-end">
-            <h3 class="fw-bold mb-0" [ngClass]="usuario.deuda === 0 ? 'text-success' : 'text-danger'">
-              ${{ usuario.deuda }}.00
-            </h3>
+
+          <div *ngIf="!cargando && misSanciones.length === 0" class="text-center py-4">
+            <i class="bi bi-emoji-smile fs-1 text-success mb-2 d-block opacity-75"></i>
+            <p class="text-muted mb-0">¡Historial limpio! No tienes ninguna sanción registrada.</p>
           </div>
+
+          <div *ngIf="!cargando && misSanciones.length > 0" class="table-responsive">
+            <table class="table table-hover align-middle custom-table mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Fecha</th>
+                  <th class="text-start">Motivo</th>
+                  <th class="text-center">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let sancion of misSanciones">
+                  <td class="text-muted small" style="white-space: nowrap;">{{ sancion.createdAt | date:'dd/MM/yyyy' }}</td>
+                  <td class="text-start fw-500 text-dark">{{ sancion.motivo }}</td>
+                  <td class="text-center">
+                    <span class="badge rounded-pill px-3 py-1 shadow-sm" [ngClass]="sancion.estado === 'Activa' ? 'bg-danger text-white' : 'bg-success text-white'">
+                      {{ sancion.estado }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-4" style="z-index: 1055;">
+  <div class="toast align-items-center text-white border-0 shadow-lg fade" 
+       [ngClass]="{'bg-success': tipoToast === 'success', 'bg-danger': tipoToast === 'danger', 'bg-warning text-dark': tipoToast === 'warning'}"
+       [class.show]="mostrarToast" [style.display]="mostrarToast ? 'block' : 'none'">
+    <div class="d-flex">
+      <div class="toast-body fw-bold fs-6 py-3 px-4">
+        <i class="bi" [ngClass]="{'bi-check-circle me-2': tipoToast === 'success', 'bi-x-circle me-2': tipoToast === 'danger', 'bi-exclamation-triangle me-2': tipoToast === 'warning'}"></i>
+        {{ mensajeToast }}
+      </div>
+      <button type="button" class="btn-close me-3 m-auto" [ngClass]="tipoToast === 'warning' ? 'btn-close-dark' : 'btn-close-white'" (click)="mostrarToast = false"></button>
     </div>
   </div>
 </div>

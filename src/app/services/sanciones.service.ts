@@ -10,6 +10,12 @@ export class SancionesService {
 
   constructor(private http: HttpClient) {}
 
+  obtenerMisSanciones(): Observable<any> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('x-token', token);
+    return this.http.get<any>(`${this.baseUrl}/mis-sanciones`, { headers });
+  }
+
   obtenerSanciones(): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);

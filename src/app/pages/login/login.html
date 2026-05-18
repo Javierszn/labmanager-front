@@ -34,14 +34,11 @@
         
         <div *ngIf="authMode === 'login'">
           <h3 class="card-title text-center mb-4 fw-bold">Iniciar Sesión</h3>
-          
           <form (ngSubmit)="iniciarSesionReal()">
             <div class="mb-3">
               <label class="form-label fw-bold">Correo Electrónico</label>
               <input type="email" class="form-control" placeholder="tu@correo.com" name="correo" [(ngModel)]="correoLogin" required #correoLog="ngModel" [ngClass]="{'is-invalid': formEnviado && correoLog.invalid}">
-              <div class="form-text small">Escribe <span class="badge bg-dark">admin</span> en tu correo para probar vista.</div>
             </div>
-            
             <div class="mb-2">
               <label class="form-label fw-bold">Contraseña</label>
               <input type="password" class="form-control" placeholder="********" name="password" [(ngModel)]="passwordLogin" required #passLog="ngModel" [ngClass]="{'is-invalid': formEnviado && passLog.invalid}">
@@ -63,7 +60,6 @@
 
         <div *ngIf="authMode === 'register'">
           <h3 class="card-title text-center mb-4 fw-bold">Crear Cuenta</h3>
-          
           <form (ngSubmit)="registrarReal()">
             <div class="row g-2 mb-3">
               <div class="col-12">
@@ -120,18 +116,38 @@
         <div *ngIf="authMode === 'forgot'">
           <div class="text-center mb-4">
             <h3 class="card-title fw-bold">Recuperar Contraseña</h3>
-            <p class="text-muted small mt-2">Ingresa el correo electrónico asociado a tu cuenta.</p>
+            <p class="text-muted small mt-2">Ingresa el correo electrónico asociado a tu cuenta para enviarte un enlace de recuperación seguro.</p>
           </div>
           <form>
             <div class="mb-4">
               <label class="form-label fw-bold">Correo Electrónico</label>
-              <input type="email" class="form-control" placeholder="tu@correo.com">
+              <input type="email" class="form-control" name="correoRec" [(ngModel)]="correoRecuperar" placeholder="tu@correo.com">
             </div>
             <div class="d-grid gap-2">
-              <button type="button" class="btn btn-primary fw-bold" (click)="recuperarPassword()">Enviar Enlace</button>
+              <button type="button" class="btn btn-primary fw-bold" (click)="solicitarRecuperacion()">Enviar Enlace al Correo</button>
             </div>
             <div class="text-center mt-4">
               <a href="javascript:void(0)" class="text-decoration-none text-muted" (click)="setMode('login')">← Volver al Login</a>
+            </div>
+          </form>
+        </div>
+
+        <div *ngIf="authMode === 'reset'">
+          <div class="text-center mb-4">
+            <h3 class="card-title fw-bold">Crear Nueva Contraseña</h3>
+            <p class="text-muted small mt-2">Escribe tu nueva contraseña. Asegúrate de guardarla en un lugar seguro.</p>
+          </div>
+          <form>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Nueva Contraseña</label>
+              <input type="password" class="form-control" name="passNew" [(ngModel)]="passResetNueva" placeholder="Escribe tu nueva contraseña">
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-bold">Confirmar Contraseña</label>
+              <input type="password" class="form-control" name="passConf" [(ngModel)]="passResetConf" placeholder="Repite la contraseña">
+            </div>
+            <div class="d-grid gap-2">
+              <button type="button" class="btn btn-success fw-bold" (click)="guardarNuevaPassword()">Actualizar Contraseña</button>
             </div>
           </form>
         </div>

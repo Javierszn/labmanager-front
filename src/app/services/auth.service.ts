@@ -40,18 +40,25 @@ export class AuthService {
     return this.http.get<any>(`${this.baseUrl}/me`, { headers });
   }
 
-  // --- NUEVO: Enviar los datos editados al backend ---
   actualizarMiPerfil(datos: any): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.put<any>(`${this.baseUrl}/me`, datos, { headers });
   }
 
-  // --- NUEVO: Enviar la nueva contraseña ---
   actualizarPassword(password: string): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);
     return this.http.put<any>(`${this.baseUrl}/me/password`, { password }, { headers });
+  }
+
+  // --- SERVICIOS DE RECUPERACIÓN DE CONTRASEÑA ---
+  solicitarRecuperacion(correo: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/recuperar`, { correo });
+  }
+
+  resetearPasswordOlvidada(token: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reset-password/${token}`, { password });
   }
 
   obtenerAlumnos(): Observable<any> {

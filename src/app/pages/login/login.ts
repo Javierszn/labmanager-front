@@ -140,23 +140,35 @@ export class Login implements OnInit {
       return;
     }
 
-    this.enviandoCorreo = true; // Activar el botón cargando
+    this.enviandoCorreo = true; 
     this.cdr.detectChanges();
 
     this.authService.solicitarRecuperacion(this.correoRecuperar).subscribe({
       next: (res: any) => {
-        this.enviandoCorreo = false; // Desactivar
-        this.mostrarNotificacion(res.msg, 'success');
-        setTimeout(() => this.setMode('login'), 3000); 
+        this.enviandoCorreo = false; 
+
+        // Si el backend mandó el enlace secreto por el bloqueo de Render
+        if (res.linkDemo) {
+          this.mostrarNotificacion('Modo Demo Activo: Redirigiendo a pantalla secreta...', 'warning');
+          setTimeout(() => {
+            window.location.href = res.linkDemo; // Nos lleva directo a cambiar la contraseña
+          }, 2500);
+        } else {
+          // Si por algún milagro el correo sí salió
+          this.mostrarNotificacion(res.msg, 'success');
+          setTimeout(() => this.setMode('login'), 3000); 
+        }
+        
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
-        this.enviandoCorreo = false; // Desactivar
+        this.enviandoCorreo = false; 
         console.error(err);
         this.mostrarNotificacion('Error al intentar enviar el correo de recuperación.', 'danger');
+        this.cdr.detectChanges();
       }
     });
   }
-
   guardarNuevaPassword() {
     if (!this.passResetNueva || !this.passResetConf) {
       this.mostrarNotificacion('Llena ambos campos.', 'warning');

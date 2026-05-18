@@ -14,7 +14,6 @@ import { SancionesService } from '../../services/sanciones.service';
 })
 export class Perfil implements OnInit {
   
-  // Variable constante para saber cuál es la imagen por defecto
   fotoPorDefecto: string = 'https://placehold.co/128x128/003b5c/ffffff?text=Perfil';
 
   usuario: any = {
@@ -29,11 +28,7 @@ export class Perfil implements OnInit {
     foto: this.fotoPorDefecto
   };
 
-  passwords = {
-    nueva: '',
-    confirmar: ''
-  };
-
+  passwords = { nueva: '', confirmar: '' };
   misSanciones: any[] = [];
   cargando: boolean = true;
 
@@ -95,7 +90,25 @@ export class Perfil implements OnInit {
     window.location.href = '/login'; 
   }
 
-  // --- NUEVA LÓGICA DE FOTO CON AUTOGUARDADO ---
+  eliminarCuenta() {
+    const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar tu cuenta permanentemente? Esta acción borrará todos tus datos y no se puede deshacer.');
+    
+    if (confirmacion) {
+      this.authService.eliminarMiCuenta().subscribe({
+        next: (res: any) => {
+          this.mostrarNotificacion('Cuenta eliminada con éxito', 'success');
+          setTimeout(() => {
+            this.authService.logout();
+            window.location.href = '/login';
+          }, 1500);
+        },
+        error: (err: any) => {
+          console.error(err);
+          this.mostrarNotificacion('Error al intentar eliminar la cuenta', 'danger');
+        }
+      });
+    }
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0]; 
@@ -104,20 +117,19 @@ export class Perfil implements OnInit {
       reader.onload = (e: any) => {
         this.usuario.foto = e.target.result;
         this.cdr.detectChanges();
-        this.guardarFotoAutomatico(); // Se guarda solita
+        this.guardarFotoAutomatico();
       };
       reader.readAsDataURL(file);
     }
   }
 
   eliminarFoto() {
-    this.usuario.foto = this.fotoPorDefecto; // Regresamos al avatar gris
+    this.usuario.foto = this.fotoPorDefecto; 
     this.cdr.detectChanges();
-    this.guardarFotoAutomatico(); // Se guarda solita
+    this.guardarFotoAutomatico(); 
   }
 
   guardarFotoAutomatico() {
-    // Usamos el mismo servicio de guardar el perfil, pero de forma silenciosa
     this.authService.actualizarMiPerfil(this.usuario).subscribe({
       next: (res: any) => {
         this.mostrarNotificacion('📸 Foto de perfil actualizada.', 'success');
@@ -128,8 +140,6 @@ export class Perfil implements OnInit {
       }
     });
   }
-
-  // ----------------------------------------------
 
   guardarPerfil() {
     this.authService.actualizarMiPerfil(this.usuario).subscribe({

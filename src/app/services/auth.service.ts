@@ -24,8 +24,8 @@ export class AuthService {
       );
   }
 
-  registro(nombre: string, correo: string, password: string, matricula: string = '') {
-    return this.http.post<any>(`${this.baseUrl}/registro`, { nombre, correo, password, matricula });
+  registro(nombre: string, correo: string, password: string, telefono: string = '', institucion: string = '', facultad: string = '') {
+    return this.http.post<any>(`${this.baseUrl}/registro`, { nombre, correo, password, telefono, institucion, facultad });
   }
 
   logout() {
@@ -52,7 +52,12 @@ export class AuthService {
     return this.http.put<any>(`${this.baseUrl}/me/password`, { password }, { headers });
   }
 
-  // --- SERVICIOS DE RECUPERACIÓN DE CONTRASEÑA ---
+  eliminarMiCuenta(): Observable<any> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('x-token', token);
+    return this.http.delete<any>(`${this.baseUrl}/me`, { headers });
+  }
+
   solicitarRecuperacion(correo: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/recuperar`, { correo });
   }

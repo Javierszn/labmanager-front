@@ -13,7 +13,6 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Login implements OnInit {
   
-  // Se agregó el modo 'reset'
   authMode: 'login' | 'register' | 'forgot' | 'reset' = 'login';
   
   correoLogin: string = '';
@@ -24,11 +23,10 @@ export class Login implements OnInit {
   regApMaterno: string = '';
   regCorreo: string = '';
   regPassword: string = '';
-  regMatricula: string = ''; 
+  regTelefono: string = ''; 
   regInstitucion: string = ''; 
   regFacultad: string = '';    
 
-  // Variables Recuperación
   correoRecuperar: string = '';
   tokenRecuperacion: string = '';
   passResetNueva: string = '';
@@ -39,17 +37,16 @@ export class Login implements OnInit {
 
   constructor(
     private router: Router, 
-    private route: ActivatedRoute, // Para leer parámetros de la URL
+    private route: ActivatedRoute, 
     private authService: AuthService,
     private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit() {
-    // Escuchamos si en la URL viene el token (ej. /login?token=abc123)
     this.route.queryParams.subscribe(params => {
       if (params['token']) {
         this.tokenRecuperacion = params['token'];
-        this.setMode('reset'); // Cambiamos a la vista de poner nueva contraseña
+        this.setMode('reset'); 
       }
     });
   }
@@ -58,7 +55,6 @@ export class Login implements OnInit {
     this.authMode = mode;
     this.formEnviado = false; 
     
-    // Si queremos salir de 'reset', limpiamos el token de la URL
     if (mode === 'login' && this.tokenRecuperacion) {
       this.tokenRecuperacion = '';
       this.router.navigate(['/login']);
@@ -113,16 +109,16 @@ export class Login implements OnInit {
     const nombreCompleto = `${this.regNombre} ${this.regApPaterno} ${this.regApMaterno}`.trim();
     const correo = this.regCorreo.trim().toLowerCase();
 
-    this.authService.registro(nombreCompleto, correo, this.regPassword, this.regMatricula).subscribe({
+    this.authService.registro(nombreCompleto, correo, this.regPassword, this.regTelefono, this.regInstitucion, this.regFacultad).subscribe({
       next: (respuesta) => {
-        this.mostrarNotificacion('🎉 ¡Cuenta creada! Ya puedes iniciar sesión.', 'success');
+        this.mostrarNotificacion('🎉 ¡Cuenta creada! Tu matrícula fue generada.', 'success');
         this.formEnviado = false;
         setTimeout(() => {
           this.authMode = 'login';
           this.correoLogin = correo; 
           this.passwordLogin = '';
           this.regNombre = ''; this.regApPaterno = ''; this.regApMaterno = '';
-          this.regCorreo = ''; this.regPassword = ''; this.regMatricula = '';
+          this.regCorreo = ''; this.regPassword = ''; this.regTelefono = '';
           this.regInstitucion = ''; this.regFacultad = ''; 
           this.cdr.detectChanges(); 
         }, 2000);
@@ -136,7 +132,6 @@ export class Login implements OnInit {
     });
   }
 
-  // ENVÍA EL CORREO
   solicitarRecuperacion() {
     if (!this.correoRecuperar) {
       this.mostrarNotificacion('Por favor ingresa un correo electrónico válido.', 'warning');
@@ -154,7 +149,6 @@ export class Login implements OnInit {
     });
   }
 
-  // GUARDA LA NUEVA CONTRASEÑA CUANDO VIENEN DEL LINK
   guardarNuevaPassword() {
     if (!this.passResetNueva || !this.passResetConf) {
       this.mostrarNotificacion('Llena ambos campos.', 'warning');
@@ -171,7 +165,7 @@ export class Login implements OnInit {
         this.mostrarNotificacion('¡Contraseña restablecida correctamente!', 'success');
         setTimeout(() => {
           this.tokenRecuperacion = '';
-          this.router.navigate(['/login']); // Quitamos el token de la url
+          this.router.navigate(['/login']);
           this.setMode('login');
         }, 2000);
       },

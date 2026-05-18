@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class SancionesService {
-  private baseUrl = 'https://labmanager-api.onrender.com/api/sanciones';
+  private baseUrl = 'http://localhost:3000/api/sanciones';
 
   constructor(private http: HttpClient) {}
 

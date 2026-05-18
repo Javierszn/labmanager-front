@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'https://labmanager-api.onrender.com/api/auth';
+  // REGRESAMOS A LOCALHOST
+  private baseUrl = 'http://localhost:3000/api/auth';
 
   constructor(private http: HttpClient) {}
 

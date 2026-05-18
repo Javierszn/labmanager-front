@@ -134,7 +134,7 @@ export class Login implements OnInit {
     });
   }
 
-  solicitarRecuperacion() {
+ solicitarRecuperacion() {
     if (!this.correoRecuperar) {
       this.mostrarNotificacion('Por favor ingresa un correo electrónico válido.', 'warning');
       return;
@@ -146,24 +146,16 @@ export class Login implements OnInit {
     this.authService.solicitarRecuperacion(this.correoRecuperar).subscribe({
       next: (res: any) => {
         this.enviandoCorreo = false; 
-
-        // DETECCIÓN DE MODO DEMO
-        if (res.linkDemo) {
-          this.mostrarNotificacion('Modo Demo Activo: Redirigiendo a pantalla secreta...', 'warning');
-          setTimeout(() => {
-            window.location.href = res.linkDemo; 
-          }, 2500);
-        } else {
-          this.mostrarNotificacion(res.msg, 'success');
-          setTimeout(() => this.setMode('login'), 3000); 
-        }
+        
+        this.mostrarNotificacion(res.msg, 'success');
+        setTimeout(() => this.setMode('login'), 3000); 
         
         this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.enviandoCorreo = false; 
         console.error(err);
-        this.mostrarNotificacion('Error al intentar enviar el correo de recuperación.', 'danger');
+        this.mostrarNotificacion('Error al conectar con el servidor para enviar correo.', 'danger');
         this.cdr.detectChanges();
       }
     });

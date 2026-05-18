@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CategoriasService {
-  private baseUrl = 'https://labmanager-api.onrender.com/api/categorias';
+  private baseUrl = 'http://localhost:3000/api/categorias';
 
   constructor(private http: HttpClient) {}
 

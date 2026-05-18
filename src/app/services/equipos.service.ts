@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EquiposService {
-  private baseUrl = 'http://localhost:3000/api/equipos';
+  private baseUrl = 'https://labmanager-api.onrender.com/api/equipos';
 
   constructor(private http: HttpClient) {}
 

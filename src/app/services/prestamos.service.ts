@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class PrestamosService {
-  private baseUrl = 'http://localhost:3000/api/prestamos';
+  private baseUrl = 'https://labmanager-api.onrender.com/api/prestamos';
 
   constructor(private http: HttpClient) {}
 

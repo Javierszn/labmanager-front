@@ -33,6 +33,8 @@ export class Login implements OnInit {
   passResetConf: string = '';
 
   formEnviado: boolean = false;
+  enviandoCorreo: boolean = false; // <-- Control de estado de carga
+
   notificacion = { mostrar: false, mensaje: '', tipo: 'success' };
 
   constructor(
@@ -138,12 +140,18 @@ export class Login implements OnInit {
       return;
     }
 
+    this.enviandoCorreo = true; // Activar el botón cargando
+    this.cdr.detectChanges();
+
     this.authService.solicitarRecuperacion(this.correoRecuperar).subscribe({
       next: (res: any) => {
+        this.enviandoCorreo = false; // Desactivar
         this.mostrarNotificacion(res.msg, 'success');
         setTimeout(() => this.setMode('login'), 3000); 
       },
       error: (err: any) => {
+        this.enviandoCorreo = false; // Desactivar
+        console.error(err);
         this.mostrarNotificacion('Error al intentar enviar el correo de recuperación.', 'danger');
       }
     });

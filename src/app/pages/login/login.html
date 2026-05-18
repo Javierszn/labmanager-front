@@ -121,10 +121,15 @@
           <form>
             <div class="mb-4">
               <label class="form-label fw-bold">Correo Electrónico</label>
-              <input type="email" class="form-control" name="correoRec" [(ngModel)]="correoRecuperar" placeholder="tu@correo.com">
+              <input type="email" class="form-control" name="correoRec" [(ngModel)]="correoRecuperar" placeholder="tu@correo.com" [disabled]="enviandoCorreo">
             </div>
             <div class="d-grid gap-2">
-              <button type="button" class="btn btn-primary fw-bold" (click)="solicitarRecuperacion()">Enviar Enlace al Correo</button>
+              <button type="button" class="btn btn-primary fw-bold py-2" (click)="solicitarRecuperacion()" [disabled]="enviandoCorreo">
+                <span *ngIf="!enviandoCorreo">Enviar Enlace al Correo</span>
+                <span *ngIf="enviandoCorreo">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Enviando...
+                </span>
+              </button>
             </div>
             <div class="text-center mt-4">
               <a href="javascript:void(0)" class="text-decoration-none text-muted" (click)="setMode('login')">← Volver al Login</a>

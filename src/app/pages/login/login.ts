@@ -33,7 +33,7 @@ export class Login implements OnInit {
   passResetConf: string = '';
 
   formEnviado: boolean = false;
-  enviandoCorreo: boolean = false; // <-- Control de estado de carga
+  enviandoCorreo: boolean = false; 
 
   notificacion = { mostrar: false, mensaje: '', tipo: 'success' };
 
@@ -147,14 +147,13 @@ export class Login implements OnInit {
       next: (res: any) => {
         this.enviandoCorreo = false; 
 
-        // Si el backend mandó el enlace secreto por el bloqueo de Render
+        // DETECCIÓN DE MODO DEMO
         if (res.linkDemo) {
           this.mostrarNotificacion('Modo Demo Activo: Redirigiendo a pantalla secreta...', 'warning');
           setTimeout(() => {
-            window.location.href = res.linkDemo; // Nos lleva directo a cambiar la contraseña
+            window.location.href = res.linkDemo; 
           }, 2500);
         } else {
-          // Si por algún milagro el correo sí salió
           this.mostrarNotificacion(res.msg, 'success');
           setTimeout(() => this.setMode('login'), 3000); 
         }
@@ -169,6 +168,7 @@ export class Login implements OnInit {
       }
     });
   }
+
   guardarNuevaPassword() {
     if (!this.passResetNueva || !this.passResetConf) {
       this.mostrarNotificacion('Llena ambos campos.', 'warning');

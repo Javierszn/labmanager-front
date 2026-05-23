@@ -1,7 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common'; 
-import { AuthService } from '../../services/auth.service'; // <-- Importado
+import { AuthService } from '../../services/auth.service'; 
 
 @Component({
   selector: 'app-navbar',
@@ -13,17 +13,17 @@ import { AuthService } from '../../services/auth.service'; // <-- Importado
 export class Navbar implements OnInit {
   isDarkMode: boolean = false;
   
-  // POR DEFECTO TODOS SON VISITANTES
+  
   rolUsuario: string = 'visitante'; 
 
   constructor(
     private router: Router,
     private renderer: Renderer2,
-    private authService: AuthService // <-- Inyectado
+    private authService: AuthService 
   ) {}
 
   ngOnInit() {
-    // Al cargar la app, busca el "gafete" en el navegador
+    
     const rolGuardado = localStorage.getItem('rol');
     if (rolGuardado) {
       this.rolUsuario = rolGuardado;
@@ -42,10 +42,10 @@ export class Navbar implements OnInit {
   }
 
   cerrarSesion() {
-    // Borramos TODOS los datos guardados en el LocalStorage
+    
     this.authService.logout();
     
-    // Lo enviamos de vuelta al login forzando la recarga para limpiar memoria
+    
     window.location.href = '/login'; 
   }
 }

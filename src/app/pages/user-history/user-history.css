@@ -16,9 +16,7 @@
   border: 1px solid #e9ecef;
 }
 
-/* ========================================== */
-/* COMPATIBILIDAD CON MODO OSCURO             */
-/* ========================================== */
+
 
 [data-bs-theme="dark"] .card-hover {
   background-color: #212529;

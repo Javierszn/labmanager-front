@@ -10,7 +10,7 @@ export class EquiposService {
 
   constructor(private http: HttpClient) {}
 
-  // 1. Traer catálogo (AHORA LLEVA TOKEN POR SEGURIDAD)
+ 
   obtenerEquipos(): Observable<any> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('x-token', token);

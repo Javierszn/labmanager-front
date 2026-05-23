@@ -1,11 +1,11 @@
-/* Pestañas (Nav Pills) personalizadas */
+
 .nav-pills .nav-link {
   color: #6c757d !important;
   transition: all 0.3s ease;
 }
 
 .nav-pills .nav-link.active {
-  background-color: #004a99 !important; /* Azul UASLP */
+  background-color: #004a99 !important; 
   color: #ffffff !important;
   box-shadow: 0 4px 10px rgba(0, 74, 153, 0.3);
 }
@@ -14,7 +14,7 @@
   background-color: #e9ecef;
 }
 
-/* Tablas más limpias */
+
 .custom-table th {
   padding: 15px;
   font-weight: 600;
@@ -27,7 +27,7 @@
   padding: 15px;
 }
 
-/* Compatibilidad con Modo Oscuro */
+
 [data-bs-theme="dark"] .bg-white.rounded-pill {
   background-color: #212529 !important;
   border: 1px solid #373b3e;
@@ -41,14 +41,14 @@
   border-color: #373b3e;
 }
 
-/* Pestañas (Nav Pills) personalizadas */
+
 .nav-pills .nav-link {
   color: #6c757d !important;
   transition: all 0.3s ease;
 }
 
 .nav-pills .nav-link.active {
-  background-color: #004a99 !important; /* Azul UASLP */
+  background-color: #004a99 !important; 
   color: #ffffff !important;
   box-shadow: 0 4px 10px rgba(0, 74, 153, 0.3);
 }
@@ -57,7 +57,7 @@
   background-color: #e9ecef;
 }
 
-/* Tablas más limpias */
+
 .custom-table th {
   padding: 15px;
   font-weight: 600;
@@ -70,7 +70,7 @@
   padding: 15px;
 }
 
-/* Estilos específicos para los botones de la tabla */
+
 .custom-table .btn {
   font-size: 0.85rem;
   padding: 0.4rem 0.8rem;

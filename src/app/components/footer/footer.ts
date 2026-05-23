@@ -9,6 +9,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './footer.css'
 })
 export class Footer {
-  // Obtenemos el año actual automáticamente para el copyright
+  
   anioActual = new Date().getFullYear(); 
 }

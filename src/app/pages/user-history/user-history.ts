@@ -18,7 +18,7 @@ export class UserHistory implements OnInit {
   mostrarToast: boolean = false;
   mensajeToast: string = '';
   tipoToast: string = 'success';
-  prestamoSeleccionadoId: string = ''; // Guarda el ID para el Modal
+  prestamoSeleccionadoId: string = ''; 
 
   constructor(
     private prestamosService: PrestamosService,
@@ -55,7 +55,7 @@ export class UserHistory implements OnInit {
     }, 3500);
   }
 
-  // Se llama al dar clic en el botón rojo (Abre el modal)
+  
   prepararCancelacion(id: string) {
     this.prestamoSeleccionadoId = id;
   }

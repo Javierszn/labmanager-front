@@ -5,7 +5,7 @@ import { EquiposService } from '../../services/equipos.service';
 import { PrestamosService } from '../../services/prestamos.service';
 import { AuthService } from '../../services/auth.service';
 import { CategoriasService } from '../../services/categorias.service';
-import { SancionesService } from '../../services/sanciones.service'; // <-- NUEVO
+import { SancionesService } from '../../services/sanciones.service'; 
 
 @Component({
   selector: 'app-admin-inventory',
@@ -26,13 +26,13 @@ export class AdminInventory implements OnInit {
   itemAEliminar: any = null;
   tipoEliminacion: 'equipo' | 'categoria' | 'sancion' = 'equipo';
 
-  alumnoASancionar: any = null; // <-- Para el modal de nueva sanción
+  alumnoASancionar: any = null; 
 
   equipos: any[] = [];
   solicitudes: any[] = [];
   alumnos: any[] = [];
   categorias: any[] = [];
-  sanciones: any[] = []; // <-- Arreglo de sanciones
+  sanciones: any[] = []; 
 
   cargandoInventario: boolean = true;
   cargandoPrestamos: boolean = true;
@@ -46,7 +46,7 @@ export class AdminInventory implements OnInit {
     private prestamosService: PrestamosService,
     private authService: AuthService,
     private categoriasService: CategoriasService,
-    private sancionesService: SancionesService, // <-- Inyectado
+    private sancionesService: SancionesService, 
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -55,7 +55,7 @@ export class AdminInventory implements OnInit {
     this.cargarPrestamosGlobalesReal();
     this.cargarAlumnos(); 
     this.cargarCategorias();
-    this.cargarSanciones(); // <-- Cargar historial de sanciones
+    this.cargarSanciones(); 
   }
 
   mostrarNotificacion(mensaje: string, tipo: string = 'success') {
@@ -66,7 +66,7 @@ export class AdminInventory implements OnInit {
     setTimeout(() => { this.mostrarToast = false; this.cdr.detectChanges(); }, 3500);
   }
 
-  // --- MÉTODOS DE SANCIONES (NUEVOS) ---
+  
   cargarSanciones() {
     this.sancionesService.obtenerSanciones().subscribe({
       next: (res: any) => {
@@ -93,7 +93,7 @@ export class AdminInventory implements OnInit {
       next: (res: any) => {
         this.mostrarNotificacion('🔒 Sanción aplicada. El usuario ha sido bloqueado.', 'success');
         this.cargarSanciones();
-        this.cargarAlumnos(); // Refrescar lista de usuarios
+        this.cargarAlumnos(); 
       },
       error: (err: any) => this.mostrarNotificacion('❌ Error al sancionar', 'danger')
     });
@@ -110,7 +110,7 @@ export class AdminInventory implements OnInit {
     });
   }
 
-  // --- MÉTODOS DE ELIMINACIÓN CON MODAL ---
+ 
   prepararEliminacion(item: any, tipo: 'equipo' | 'categoria' | 'sancion') {
     this.itemAEliminar = item;
     this.tipoEliminacion = tipo;
@@ -147,7 +147,7 @@ export class AdminInventory implements OnInit {
     this.itemAEliminar = null;
   }
 
-  // --- MÉTODOS EXISTENTES INTACTOS ---
+  
   cargarCategorias() {
     this.categoriasService.obtenerCategorias().subscribe({
       next: (res: any) => { this.categorias = res.categorias; this.cdr.detectChanges(); }

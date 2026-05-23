@@ -1,6 +1,4 @@
-/* ========================================== */
-/* CLASES DE COLOR DIRECTAS UASLP             */
-/* ========================================== */
+
 .bg-uaslp-navy {
   background-color: #004a99 !important;
 }
@@ -15,9 +13,7 @@
   color: rgba(255, 255, 255, 0.85) !important;
 }
 
-/* ========================================== */
-/* GLOBAL Y HERO SECTION                      */
-/* ========================================== */
+
 body {
   background-color: #f8f9fa;
   font-family: 'Segoe UI', Roboto, sans-serif;
@@ -53,9 +49,7 @@ body {
   box-shadow: 0 12px 20px rgba(255, 255, 255, 0.2) !important;
 }
 
-/* ========================================== */
-/* TARJETAS MODERNAS                          */
-/* ========================================== */
+
 .card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -86,9 +80,7 @@ body {
   transform: scale(1.15) rotate(5deg);
 }
 
-/* ========================================== */
-/* MODO OSCURO (NATIVO DE BOOTSTRAP)          */
-/* ========================================== */
+
 [data-bs-theme="dark"] body {
   background-color: #121212;
 }
